@@ -1,4 +1,4 @@
-import {TComponent, TPosition} from "./types";
+import {TComponent} from "./types";
 
 export interface IComponent {
     [key: number]: TComponent
@@ -6,8 +6,4 @@ export interface IComponent {
 
 export interface IKeys {
     [key: string]: boolean
-}
-
-export interface ITileData {
-    [key: string]: TPosition
 }

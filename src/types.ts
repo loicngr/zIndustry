@@ -1,8 +1,6 @@
 import {EComponentType, EDirection} from "./enums";
 
-export type TNewComponent = {
-    x: number,
-    y: number,
+export type TNewComponent = TPosition & {
     width: number,
     height: number,
     type: EComponentType
@@ -12,10 +10,8 @@ export type TNewComponent = {
     state?: boolean
 }
 
-export type TComponent = {
+export type TComponent = TPosition & {
     id?: number,
-    x: number,
-    y: number,
     width: number,
     height: number,
     speedX?: number,
@@ -39,3 +35,5 @@ export type TPosition = {
     x: number,
     y: number
 }
+
+export type TTileData = string | number | { [key: string]: TTileData }

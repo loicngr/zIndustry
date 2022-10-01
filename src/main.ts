@@ -1,17 +1,17 @@
 import './style.css'
 import {EComponentType, EDirection, EKey} from "./enums";
 import {
-    _APP_TILE_SIZE,
     APP_FPS_INVERSE,
     APP_LEVEL_SIZE,
     APP_LIMIT_FPS,
     APP_MOVE_SPEED,
+    APP_REAL_TILE_SIZE,
     APP_TILE_MAP_DATA,
     APP_TILE_MAP_PATH,
     APP_TILE_MAP_SIZE,
     APP_TILE_SIZE
 } from "./consts";
-import {TComponent, TNewComponent, TPosition, TPreload} from "./types";
+import {TComponent, TNewComponent, TPreload} from "./types";
 import {IComponent, IKeys} from "./interfaces";
 import _ from 'lodash'
 
@@ -79,7 +79,7 @@ class Game {
     }
 
     private static _createImageBitMap(context: CanvasRenderingContext2D, x: number, y: number): Promise<ImageBitmap> {
-        const imageData = context.getImageData(x, y, APP_TILE_SIZE, APP_TILE_SIZE)
+        const imageData = context.getImageData(x, y, APP_REAL_TILE_SIZE, APP_REAL_TILE_SIZE)
         return createImageBitmap(imageData)
     }
 
@@ -88,18 +88,22 @@ class Game {
             return
         }
 
-        const tileGrassBitMap = Game._createImageBitMap(this.tileMapContext, APP_TILE_MAP_DATA.grass_01.x, APP_TILE_MAP_DATA.grass_01.y)
+        const tileGrassBitMap = Game._createImageBitMap(
+            this.tileMapContext,
+            _.get(APP_TILE_MAP_DATA, ['grass_01', 'x']),
+            _.get(APP_TILE_MAP_DATA, ['grass_01', 'y'])
+        )
 
         tileGrassBitMap.then((tileImage) => {
             if (!this.context) {
                 return
             }
 
-            for (let x = 0; x < APP_LEVEL_SIZE.width; x += _APP_TILE_SIZE) {
-                this.context.drawImage(tileImage, x, 0, _APP_TILE_SIZE, _APP_TILE_SIZE)
+            for (let x = 0; x < APP_LEVEL_SIZE.width; x += APP_TILE_SIZE) {
+                this.context.drawImage(tileImage, x, 0, APP_TILE_SIZE, APP_TILE_SIZE)
 
-                for (let y = 0; y < APP_LEVEL_SIZE.height; y += _APP_TILE_SIZE) {
-                    this.context.drawImage(tileImage, x, y, _APP_TILE_SIZE, _APP_TILE_SIZE)
+                for (let y = 0; y < APP_LEVEL_SIZE.height; y += APP_TILE_SIZE) {
+                    this.context.drawImage(tileImage, x, y, APP_TILE_SIZE, APP_TILE_SIZE)
                 }
             }
         })
@@ -119,7 +123,7 @@ class Game {
                     return
                 }
 
-                let tileId: TPosition = _.get(APP_TILE_MAP_DATA, newComponent.tileId)
+                let tileId = _.get(APP_TILE_MAP_DATA, newComponent.tileId)
 
                 switch (newComponent.type) {
                     case EComponentType.Player:
@@ -144,7 +148,7 @@ class Game {
                         return
                     }
 
-                    this.context.drawImage(tileImage, newComponent.x, newComponent.y, _APP_TILE_SIZE, _APP_TILE_SIZE)
+                    this.context.drawImage(tileImage, newComponent.x, newComponent.y, APP_TILE_SIZE, APP_TILE_SIZE)
                 })
             }
         }
@@ -180,16 +184,16 @@ class Game {
 
                         switch (this.direction) {
                             case EDirection.Up:
-                                _component.y -= _APP_TILE_SIZE
+                                _component.y -= APP_TILE_SIZE
                                 break
                             case EDirection.Down:
-                                _component.y += _APP_TILE_SIZE
+                                _component.y += APP_TILE_SIZE
                                 break
                             case EDirection.Left:
-                                _component.x -= _APP_TILE_SIZE
+                                _component.x -= APP_TILE_SIZE
                                 break
                             case EDirection.Right:
-                                _component.x += _APP_TILE_SIZE
+                                _component.x += APP_TILE_SIZE
                                 break
                         }
 
@@ -336,26 +340,26 @@ function main(): void {
     game.createComponent({
         x: 0,
         y: 0,
-        width: _APP_TILE_SIZE,
-        height: _APP_TILE_SIZE,
+        width: APP_TILE_SIZE,
+        height: APP_TILE_SIZE,
         tileId: 'player_01_idle',
         type: EComponentType.Player
     })
 
     game.createComponent({
-        x: _APP_TILE_SIZE * 5,
-        y: _APP_TILE_SIZE * 5,
-        width: _APP_TILE_SIZE,
-        height: _APP_TILE_SIZE,
+        x: APP_TILE_SIZE * 5,
+        y: APP_TILE_SIZE * 5,
+        width: APP_TILE_SIZE,
+        height: APP_TILE_SIZE,
         tileId: 'fence_01',
         type: EComponentType.Fence
     })
 
     game.createComponent({
-        x: _APP_TILE_SIZE * 10,
-        y: _APP_TILE_SIZE * 5,
-        width: _APP_TILE_SIZE,
-        height: _APP_TILE_SIZE,
+        x: APP_TILE_SIZE * 10,
+        y: APP_TILE_SIZE * 5,
+        width: APP_TILE_SIZE,
+        height: APP_TILE_SIZE,
         canInteract: true,
         tileId: 'door_01',
         type: EComponentType.Door
