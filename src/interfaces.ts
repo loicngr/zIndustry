@@ -1,9 +1,11 @@
-import {TComponent} from "./types";
+export interface ICharacter {
+    image: HTMLImageElement | null;
+    height: number;
+    width: number;
+    x: number,
+    y: number,
+    screenX: number,
+    screenY: number
 
-export interface IComponent {
-    [key: number]: TComponent
-}
-
-export interface IKeys {
-    [key: string]: boolean
+    move(delta: number, x: number, y: number): void;
 }
