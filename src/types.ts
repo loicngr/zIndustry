@@ -36,4 +36,9 @@ export type TPosition = {
     y: number
 }
 
+export type TSize = {
+    width: number,
+    height: number
+}
+
 export type TTileData = string | number | { [key: string]: TTileData }

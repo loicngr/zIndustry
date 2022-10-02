@@ -3,7 +3,8 @@ export enum EKey {
     Left = 'KeyA',
     Up = 'KeyW',
     Down = 'KeyS',
-    E = 'KeyE'
+    E = 'KeyE',
+    F = 'KeyF'
 }
 
 export enum EComponentType {

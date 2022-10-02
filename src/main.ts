@@ -2,7 +2,7 @@ import './style.css'
 import {EComponentType, EDirection, EKey} from "./enums";
 import {
     APP_FPS_INVERSE,
-    APP_LEVEL_SIZE,
+    APP_LEVEL_CAM_SIZE,
     APP_LIMIT_FPS,
     APP_MOVE_SPEED,
     APP_REAL_TILE_SIZE,
@@ -11,9 +11,10 @@ import {
     APP_TILE_MAP_SIZE,
     APP_TILE_SIZE
 } from "./consts";
-import {TComponent, TNewComponent, TPreload} from "./types";
+import {TComponent, TNewComponent, TPosition, TPreload} from "./types";
 import {IComponent, IKeys} from "./interfaces";
 import _ from 'lodash'
+import {devLog} from "./utils";
 
 class Game {
     private context: CanvasRenderingContext2D | undefined | null
@@ -83,30 +84,15 @@ class Game {
         return createImageBitmap(imageData)
     }
 
-    public clear(): void {
-        if (!this.context) {
-            return
+    public getMapCenterCanvasPosition(): TPosition {
+        return {
+            x: (APP_LEVEL_CAM_SIZE.width / 2) - (APP_TILE_SIZE / 2),
+            y: (APP_LEVEL_CAM_SIZE.height / 2) - (APP_TILE_SIZE / 2)
         }
+    }
 
-        const tileGrassBitMap = Game._createImageBitMap(
-            this.tileMapContext,
-            _.get(APP_TILE_MAP_DATA, ['grass_01', 'x']),
-            _.get(APP_TILE_MAP_DATA, ['grass_01', 'y'])
-        )
-
-        tileGrassBitMap.then((tileImage) => {
-            if (!this.context) {
-                return
-            }
-
-            for (let x = 0; x < APP_LEVEL_SIZE.width; x += APP_TILE_SIZE) {
-                this.context.drawImage(tileImage, x, 0, APP_TILE_SIZE, APP_TILE_SIZE)
-
-                for (let y = 0; y < APP_LEVEL_SIZE.height; y += APP_TILE_SIZE) {
-                    this.context.drawImage(tileImage, x, y, APP_TILE_SIZE, APP_TILE_SIZE)
-                }
-            }
-        })
+    public clear(): void {
+        this.generateCanvasMap()
     }
 
     public createComponent(component: TNewComponent): void {
@@ -179,6 +165,11 @@ class Game {
                         this.direction = EDirection.Down
                     }
 
+                    if (keys[EKey.F]) {
+                        devLog(`x: ${newComponent.x}, y: ${newComponent.y}`)
+                        keys[EKey.F] = false
+                    }
+
                     if (keys[EKey.E]) {
                         let _component = _.cloneDeep(newComponent)
 
@@ -249,8 +240,8 @@ class Game {
     }
 
     public start(): void {
-        this.canvas.width = APP_LEVEL_SIZE.width
-        this.canvas.height = APP_LEVEL_SIZE.height
+        this.canvas.width = APP_LEVEL_CAM_SIZE.width
+        this.canvas.height = APP_LEVEL_CAM_SIZE.height
 
         window.addEventListener('keydown', (keyEvent) => {
             this.keys[keyEvent.code] = (keyEvent.type === "keydown")
@@ -265,6 +256,28 @@ class Game {
         document.body.insertBefore(this.canvas, document.body.childNodes[0])
 
         this.update()
+    }
+
+    private generateCanvasMap(): void {
+        const tileGrassBitMap = Game._createImageBitMap(
+            this.tileMapContext,
+            _.get(APP_TILE_MAP_DATA, ['grass_01', 'x']),
+            _.get(APP_TILE_MAP_DATA, ['grass_01', 'y'])
+        )
+
+        tileGrassBitMap.then((tileImage) => {
+            if (!this.context) {
+                return
+            }
+
+            for (let x = 0; x < APP_LEVEL_CAM_SIZE.width; x += APP_TILE_SIZE) {
+                this.context.drawImage(tileImage, x, 0, APP_TILE_SIZE, APP_TILE_SIZE)
+
+                for (let y = 0; y < APP_LEVEL_CAM_SIZE.height; y += APP_TILE_SIZE) {
+                    this.context.drawImage(tileImage, x, y, APP_TILE_SIZE, APP_TILE_SIZE)
+                }
+            }
+        })
     }
 
     // @ts-ignore
@@ -337,9 +350,10 @@ function main(): void {
     const game = new Game(tileMapContext)
     Object.defineProperty(window, '_game', {value: game, writable: false})
 
+    const mapCenter = game.getMapCenterCanvasPosition()
+
     game.createComponent({
-        x: 0,
-        y: 0,
+        ...mapCenter,
         width: APP_TILE_SIZE,
         height: APP_TILE_SIZE,
         tileId: 'player_01_idle',

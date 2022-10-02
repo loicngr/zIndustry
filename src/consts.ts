@@ -13,9 +13,19 @@ export const APP_REAL_TILE_SIZE = 16
 
 export const APP_TILE_SIZE_SCALE = 2.5
 
-export const APP_TILE_SIZE = 16 * APP_TILE_SIZE_SCALE
+export const APP_TILE_SIZE = APP_REAL_TILE_SIZE * APP_TILE_SIZE_SCALE
 
-export const APP_LEVEL_SIZE = {width: (16 * 20) * APP_TILE_SIZE_SCALE, height: (16 * 20) * APP_TILE_SIZE_SCALE}
+export const APP_LEVEL_SIZE = {
+    width: (APP_REAL_TILE_SIZE * 40) * APP_TILE_SIZE_SCALE,
+    height: (APP_REAL_TILE_SIZE * 40) * APP_TILE_SIZE_SCALE
+}
+
+export const APP_LEVEL_CAM_SIZE = {
+    width: (APP_REAL_TILE_SIZE * 20) * APP_TILE_SIZE_SCALE,
+    height: (APP_REAL_TILE_SIZE * 20) * APP_TILE_SIZE_SCALE
+}
+
+export const APP_LEVEL_CAM_NEXT_CHUNK = (APP_REAL_TILE_SIZE * APP_TILE_SIZE_SCALE) * 2
 
 export const APP_TILE_MAP_SIZE = {width: 458, height: 305}
 
