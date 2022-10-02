@@ -14,11 +14,12 @@ export class Component {
 
     constructor(map: TMap, x: number, y: number) {
         this.map = map
-        this.screenX = 0
-        this.screenY = 0
 
         this.x = x
         this.y = y
+
+        this.screenX = 0
+        this.screenY = 0
 
         this.speed = 256 // pixels per second
 

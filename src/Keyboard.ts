@@ -19,6 +19,10 @@ export class Keyboard {
         return safeGet(this.keys, key, false)
     }
 
+    public resetKey(key: string): void {
+        this.keys[key] = false
+    }
+
     private onKeyDown(event: KeyboardEvent) {
         event.preventDefault()
 

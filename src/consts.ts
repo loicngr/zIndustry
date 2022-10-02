@@ -41,8 +41,12 @@ export const APP_MAP: TMap = {
         ]
     ],
 
-    getTile: function (layer: number, col: number, row: number): number {
-        return this.layers[layer][row * APP_MAP.cols + col]
+    getTile: function (layerIndex: number, col: number, row: number): number {
+        return this.layers[layerIndex][row * APP_MAP.cols + col]
+    },
+
+    setTile: function (layerIndex: number, col: number, row: number, tile: number): void {
+        this.layers[layerIndex][row * APP_MAP.cols + col] = tile
     },
 
     isSolidTileAtXY: function (x: number, y: number) {

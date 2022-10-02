@@ -1,11 +1,12 @@
 import {Loader} from "./Loader"
 import {APP_DEBUG, APP_MAP, APP_MAP_SIZE} from "./consts"
 import {Keyboard} from "./Keyboard"
-import {EKey} from "./enums"
+import {EDirection, EKey} from "./enums"
 import {Camera} from "./Camera"
 import {Character} from "./Character"
 import {ICharacter} from "./interfaces"
-import {TMap} from "./types"
+import {TMap, TPosition} from "./types"
+import {devLog} from "./utils"
 
 export class Game {
     private readonly context: CanvasRenderingContext2D
@@ -64,24 +65,50 @@ export class Game {
     }
 
     private update(delta: number): void {
+        if (!this.character || !this.camera) {
+            return
+        }
+
         let x = 0
         let y = 0
 
         if (this.keyboard.isPressed(EKey.Left)) {
+            this.character.direction = EDirection.Left
             x = -1
         }
         if (this.keyboard.isPressed(EKey.Right)) {
+            this.character.direction = EDirection.Right
             x = 1
         }
         if (this.keyboard.isPressed(EKey.Up)) {
+            this.character.direction = EDirection.Up
             y = -1
         }
         if (this.keyboard.isPressed(EKey.Down)) {
+            this.character.direction = EDirection.Down
             y = 1
         }
+        if (this.keyboard.isPressed(EKey.F)) {
+            this.keyboard.resetKey(EKey.F)
 
-        this.character?.move(delta, x, y)
-        this.camera?.update()
+            devLog(`x: ${this.character.x}, y: ${this.character.y}`)
+            devLog(`screenX: ${this.character.screenX}, screenY: ${this.character.screenY}`)
+        }
+        if (this.keyboard.isPressed(EKey.E) && this.character) {
+            this.keyboard.resetKey(EKey.E)
+
+            this.spawnItem(this.character.getFrontPosition(), 5)
+        }
+
+        this.character.move(delta, x, y)
+        this.camera.update()
+    }
+
+    private spawnItem(position: TPosition, tile: number): void {
+        const col = this.map.getCol(position.x)
+        const row = this.map.getRow(position.y)
+
+        this.map.setTile(1, col, row, tile)
     }
 
     private render(): void {

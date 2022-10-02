@@ -1,5 +1,5 @@
-import {TMap} from "./types";
-import {ICharacter} from "./interfaces";
+import {TMap} from "./types"
+import {ICharacter} from "./interfaces"
 
 export class Camera {
     readonly height: number
@@ -33,7 +33,7 @@ export class Camera {
         }
 
         this.following.screenX = this.width / 2
-        this.following.screenY = this.height / 2;
+        this.following.screenY = this.height / 2
 
         this.x = this.following.x - this.width / 2
         this.y = this.following.y - this.height / 2
