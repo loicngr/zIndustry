@@ -8,7 +8,7 @@ export class Camera {
     y: number
     private readonly maxX: number
     private readonly maxY: number
-    private following: undefined | ICharacter
+    private character: undefined | ICharacter
 
     constructor(map: TMap, width: number, height: number) {
         this.width = width
@@ -21,38 +21,38 @@ export class Camera {
     }
 
     public follow(character: ICharacter) {
-        this.following = character
+        this.character = character
 
         character.screenX = 0
         character.screenY = 0
     }
 
     public update() {
-        if (!this.following) {
+        if (!this.character) {
             return
         }
 
-        this.following.screenX = this.width / 2
-        this.following.screenY = this.height / 2
+        this.character.screenX = this.width / 2
+        this.character.screenY = this.height / 2
 
-        this.x = this.following.x - this.width / 2
-        this.y = this.following.y - this.height / 2
+        this.x = this.character.x - this.width / 2
+        this.y = this.character.y - this.height / 2
 
         this.x = Math.max(0, Math.min(this.x, this.maxX))
         this.y = Math.max(0, Math.min(this.y, this.maxY))
 
         if (
-            this.following.x < this.width / 2
-            || this.following.x > this.maxX + this.width / 2
+            this.character.x < this.width / 2
+            || this.character.x > this.maxX + this.width / 2
         ) {
-            this.following.screenX = this.following.x - this.x
+            this.character.screenX = this.character.x - this.x
         }
 
         if (
-            this.following.y < this.height / 2
-            || this.following.y > this.maxY + this.height / 2
+            this.character.y < this.height / 2
+            || this.character.y > this.maxY + this.height / 2
         ) {
-            this.following.screenY = this.following.y - this.y
+            this.character.screenY = this.character.y - this.y
         }
     }
 }

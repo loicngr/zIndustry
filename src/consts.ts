@@ -4,7 +4,7 @@ export const APP_DEBUG = import.meta.env.DEV
 
 export const APP_MAP_SIZE = 512
 
-const APP_COLLISION_TILE = [3, 5]
+export const APP_COLLISION_TILE = [3, 5]
 
 export const APP_MAP: TMap = {
     cols: 12,
@@ -49,7 +49,7 @@ export const APP_MAP: TMap = {
         this.layers[layerIndex][row * APP_MAP.cols + col] = tile
     },
 
-    isSolidTileAtXY: function (x: number, y: number) {
+    isSolidTileAtXY: function (x: number, y: number): boolean {
         const col = Math.floor(x / this.tSize)
         const row = Math.floor(y / this.tSize)
 
@@ -58,6 +58,23 @@ export const APP_MAP: TMap = {
             const isSolid = APP_COLLISION_TILE.indexOf(tile) !== -1
             return res || isSolid
         }, false)
+    },
+
+    _isSolidTileAtXY: function (x: number, y: number): boolean {
+        const col: number = Math.floor(x / this.tSize)
+        const row: number = Math.floor(y / this.tSize)
+
+        for (const _layerIndex in this.layers) {
+            const layerIndex: number = parseInt(_layerIndex)
+            const tile: number = this.getTile(layerIndex, col, row)
+            const isSolid = APP_COLLISION_TILE.indexOf(tile) !== -1
+
+            if (isSolid) {
+                return true
+            }
+        }
+
+        return false
     },
 
     getCol: function (x: number) {

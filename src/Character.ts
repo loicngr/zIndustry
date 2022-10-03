@@ -2,10 +2,10 @@ import {Component} from "./Component"
 import {TMap, TPosition} from "./types"
 import {ICharacter} from "./interfaces"
 import {Loader} from "./Loader"
-import {EDirection} from "./enums";
+import {EDirection} from "./enums"
 
 export class Character extends Component implements ICharacter {
-    public direction: EDirection;
+    public direction: EDirection
 
     constructor(loader: Loader, map: TMap, x: number, y: number) {
         super(map, x, y)
@@ -18,30 +18,30 @@ export class Character extends Component implements ICharacter {
         this.x += x * this.speed * delta
         this.y += y * this.speed * delta
 
-        this.collide(x, y)
+        this.collide()
 
-        const maxX = this.map.cols * this.map.tSize;
-        const maxY = this.map.rows * this.map.tSize;
+        const maxX = this.map.cols * this.map.tSize
+        const maxY = this.map.rows * this.map.tSize
 
         this.x = Math.max(0, Math.min(this.x, maxX))
         this.y = Math.max(0, Math.min(this.y, maxY))
     }
 
-    public getFrontPosition(): TPosition {
+    public getFrontPositionDirection(): TPosition {
         let position = {x: this.x, y: this.y}
 
         switch (this.direction) {
             case EDirection.Left:
-                position.x = Math.floor(position.x - this.map.tSize)
+                position.x -= this.map.tSize
                 break
             case EDirection.Right:
-                position.x = Math.floor(position.x + this.map.tSize)
+                position.x += this.map.tSize
                 break
             case EDirection.Up:
-                position.y = Math.floor(position.y - this.map.tSize)
+                position.y -= this.map.tSize
                 break
             case EDirection.Down:
-                position.y = Math.floor(position.y + this.map.tSize)
+                position.y += this.map.tSize
                 break
             default:
                 break
@@ -51,7 +51,7 @@ export class Character extends Component implements ICharacter {
     }
 
 
-    private collide(x: number, y: number): void {
+    private collide(): void {
         let row
         let col
 
@@ -60,8 +60,6 @@ export class Character extends Component implements ICharacter {
         const right = this.x + this.width / 2 - 1
         const top = this.y - this.height / 2
         const bottom = this.y + this.height / 2 - 1
-
-        // console.log('left: ', left, 'right: ', right, 'top: ', top, 'bottom: ', bottom)
 
         const collision =
             this.map.isSolidTileAtXY(left, top) ||
@@ -73,18 +71,23 @@ export class Character extends Component implements ICharacter {
             return
         }
 
-        if (y > 0) {
-            row = this.map.getRow(bottom)
-            this.y = -this.height / 2 + this.map.getY(row)
-        } else if (y < 0) {
-            row = this.map.getRow(top)
-            this.y = this.height / 2 + this.map.getY(row + 1)
-        } else if (x > 0) {
-            col = this.map.getCol(right);
-            this.x = -this.width / 2 + this.map.getX(col)
-        } else if (x < 0) {
-            col = this.map.getCol(left);
-            this.x = this.width / 2 + this.map.getX(col + 1)
+        switch (this.direction) {
+            case EDirection.Left:
+                col = this.map.getCol(left)
+                this.x = this.width / 2 + this.map.getX(col + 1)
+                break
+            case EDirection.Right:
+                col = this.map.getCol(right)
+                this.x = -this.width / 2 + this.map.getX(col)
+                break
+            case EDirection.Up:
+                row = this.map.getRow(top)
+                this.y = this.height / 2 + this.map.getY(row + 1)
+                break
+            case EDirection.Down:
+                row = this.map.getRow(bottom)
+                this.y = -this.height / 2 + this.map.getY(row)
+                break
         }
     }
 }

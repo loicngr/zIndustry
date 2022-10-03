@@ -75,19 +75,17 @@ export class Game {
         if (this.keyboard.isPressed(EKey.Left)) {
             this.character.direction = EDirection.Left
             x = -1
-        }
-        if (this.keyboard.isPressed(EKey.Right)) {
+        } else if (this.keyboard.isPressed(EKey.Right)) {
             this.character.direction = EDirection.Right
             x = 1
-        }
-        if (this.keyboard.isPressed(EKey.Up)) {
+        } else if (this.keyboard.isPressed(EKey.Up)) {
             this.character.direction = EDirection.Up
             y = -1
-        }
-        if (this.keyboard.isPressed(EKey.Down)) {
+        } else if (this.keyboard.isPressed(EKey.Down)) {
             this.character.direction = EDirection.Down
             y = 1
         }
+
         if (this.keyboard.isPressed(EKey.F)) {
             this.keyboard.resetKey(EKey.F)
 
@@ -97,7 +95,7 @@ export class Game {
         if (this.keyboard.isPressed(EKey.E) && this.character) {
             this.keyboard.resetKey(EKey.E)
 
-            this.spawnItem(this.character.getFrontPosition(), 5)
+            this.spawnItem(this.character.getFrontPositionDirection(), 5)
         }
 
         this.character.move(delta, x, y)

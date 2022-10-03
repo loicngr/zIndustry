@@ -23,8 +23,8 @@ export class Component {
 
         this.speed = 256 // pixels per second
 
-        this.width = APP_MAP.tSize;
-        this.height = APP_MAP.tSize;
+        this.width = APP_MAP.tSize
+        this.height = APP_MAP.tSize
 
         this.image = null
     }
