@@ -6,12 +6,14 @@ import {EDirection} from "./enums"
 
 export class Character extends Component implements ICharacter {
     public direction: EDirection
+    public tileData: TMap
 
-    constructor(loader: Loader, map: TMap, x: number, y: number) {
+    constructor(loader: Loader, map: TMap, x: number, y: number, tileData: TMap) {
         super(map, x, y)
 
-        this.image = loader.getImage('character')
+        this.image = loader.getImage(tileData.key)
         this.direction = EDirection.None
+        this.tileData = tileData
     }
 
     public move(delta: number, x: number, y: number): void {

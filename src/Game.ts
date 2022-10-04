@@ -1,5 +1,5 @@
 import {Loader} from "./Loader"
-import {APP_DEBUG, APP_MAP, APP_MAP_SIZE} from "./consts"
+import {APP_DEBUG, APP_MAP, APP_MAP_SIZE, APP_TILE_CHARACTER_1_DATA} from "./consts"
 import {Keyboard} from "./Keyboard"
 import {EDirection, EKey} from "./enums"
 import {Camera} from "./Camera"
@@ -38,15 +38,16 @@ export class Game {
 
     private load(): Promise<HTMLImageElement | string>[] {
         return [
-            this.loader.loadImage('tiles', './tilemap/tiles.png'),
-            this.loader.loadImage('character', './tilemap/character.png')
+            this.loader.loadImage('tiles', './tiles/tiles.png'),
+            this.loader.loadImage(APP_TILE_CHARACTER_1_DATA.key, `./tiles/${APP_TILE_CHARACTER_1_DATA.key}.png`)
         ]
     }
 
     private tick(elapsed: number): void {
         requestAnimationFrame(this.tick.bind(this))
+        const _APP_MAP_SIZE = APP_MAP_SIZE()
 
-        this.context.clearRect(0, 0, APP_MAP_SIZE, APP_MAP_SIZE)
+        this.context.clearRect(0, 0, _APP_MAP_SIZE.width, _APP_MAP_SIZE.height)
         const delta = Math.min((elapsed - this.previousElapsed) / 1000.0, 0.25)
 
         this.previousElapsed = elapsed
@@ -59,8 +60,11 @@ export class Game {
         this.keyboard.listenForEvents(keysValues)
 
         this.tileAtlas = this.loader.getImage('tiles')
-        this.character = new Character(this.loader, this.map, 160, 160)
-        this.camera = new Camera(this.map, APP_MAP_SIZE, APP_MAP_SIZE)
+        this.character = new Character(this.loader, this.map, 160, 160, APP_TILE_CHARACTER_1_DATA)
+
+        const _APP_MAP_SIZE = APP_MAP_SIZE()
+
+        this.camera = new Camera(this.map, _APP_MAP_SIZE.width, _APP_MAP_SIZE.height)
         this.camera.follow(this.character)
     }
 
@@ -113,11 +117,19 @@ export class Game {
         // background
         this.drawLayer(0)
 
-        if (this.character && this.character.image) {
+        if (this.character && this.character.image && this.character.tileData) {
+            let characterTile: number = this.character.tileData.tiles[this.character.direction]
+
             this.context.drawImage(
                 this.character.image,
+                (characterTile - 1) * this.character.tileData.tSize,
+                0,
+                this.character.tileData.tSize,
+                this.character.tileData.tSize,
                 this.character.screenX - this.character.width / 2,
-                this.character.screenY - this.character.height / 2
+                this.character.screenY - this.character.height / 2,
+                this.character.tileData.tSize,
+                this.character.tileData.tSize
             )
         }
 

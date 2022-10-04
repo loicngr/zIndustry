@@ -1,7 +1,8 @@
 import {EDirection} from "./enums"
-import {TPosition} from "./types"
+import {TMap, TPosition} from "./types"
 
 export interface ICharacter {
+    tileData: TMap;
     image: HTMLImageElement | null
     height: number
     width: number
