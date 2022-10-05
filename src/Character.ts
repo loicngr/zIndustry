@@ -1,8 +1,8 @@
 import {Component} from "./Component"
 import {TMap, TPosition} from "./types"
-import {ICharacter} from "./interfaces"
+import {ICharacter, IGame} from "./interfaces"
 import {Loader} from "./Loader"
-import {EDirection} from "./enums"
+import {EDirection, EKey} from "./enums"
 
 export class Character extends Component implements ICharacter {
     public direction: EDirection
@@ -52,6 +52,26 @@ export class Character extends Component implements ICharacter {
         return position
     }
 
+    public handleMovement(game: IGame, updateDelta: number): void {
+        let x = 0
+        let y = 0
+
+        if (game.keyboard.isPressed(EKey.Left)) {
+            this.direction = EDirection.Left
+            x = -1
+        } else if (game.keyboard.isPressed(EKey.Right)) {
+            this.direction = EDirection.Right
+            x = 1
+        } else if (game.keyboard.isPressed(EKey.Up)) {
+            this.direction = EDirection.Up
+            y = -1
+        } else if (game.keyboard.isPressed(EKey.Down)) {
+            this.direction = EDirection.Down
+            y = 1
+        }
+
+        this.move(updateDelta, x, y)
+    }
 
     private collide(): void {
         let row

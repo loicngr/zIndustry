@@ -24,16 +24,20 @@ export class Keyboard {
     }
 
     private onKeyDown(event: KeyboardEvent) {
-        event.preventDefault()
-
         const code = event.code
-        this.keys[code] = true
+
+        if (code in this.keys) {
+            event.preventDefault()
+            this.keys[code] = true
+        }
     }
 
     private onKeyUp(event: KeyboardEvent) {
-        event.preventDefault()
-
         const code = event.code
-        this.keys[code] = false
+
+        if (code in this.keys) {
+            event.preventDefault()
+            this.keys[code] = false
+        }
     }
 }

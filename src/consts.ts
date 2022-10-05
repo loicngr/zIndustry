@@ -112,21 +112,35 @@ export const APP_MAP: TMap = {
         }, false)
     },
 
-    _isSolidTileAtXY: function (x: number, y: number): boolean {
-        const col: number = Math.floor(x / this.tSize)
-        const row: number = Math.floor(y / this.tSize)
+    _isSolidTileAtXY: function (x: number, y: number, direction: EDirection): boolean {
 
-        for (const _layerIndex in this.layers) {
-            const layerIndex: number = parseInt(_layerIndex)
-            const tile: number = this.getTile(layerIndex, col, row)
-            const isSolid = APP_COLLISION_TILE.indexOf(tile) !== -1
+        let position = {x, y}
 
-            if (isSolid) {
-                return true
-            }
+        switch (direction) {
+            case EDirection.Left:
+                position.x -= this.tSize
+                break
+            case EDirection.Right:
+                position.x += this.tSize
+                break
+            case EDirection.Up:
+                position.y -= this.tSize
+                break
+            case EDirection.Down:
+                position.y += this.tSize
+                break
+            default:
+                break
         }
 
-        return false
+        const col: number = Math.floor(position.x / this.tSize)
+        const row: number = Math.floor(position.y / this.tSize)
+
+        const tile = this.getTile(1, col, row)
+
+        return APP_COLLISION_TILE.indexOf(tile) !== -1;
+
+
     },
 
     getCol: function (x: number) {
