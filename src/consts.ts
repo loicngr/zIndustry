@@ -1,4 +1,4 @@
-import {TMap} from "./types"
+import {TMap, TPosition} from "./types"
 import {EDirection} from "./enums"
 
 export const APP_DEBUG = import.meta.env.DEV
@@ -101,46 +101,13 @@ export const APP_MAP: TMap = {
         this.layers[layerIndex][row * APP_MAP.cols + col] = tile
     },
 
-    isSolidTileAtXY: function (x: number, y: number): boolean {
-        const col = Math.floor(x / this.tSize)
-        const row = Math.floor(y / this.tSize)
-
-        return this.layers.reduce((res: boolean, _layer: any, index: number) => {
-            const tile = this.getTile(index, col, row)
-            const isSolid = APP_COLLISION_TILE.indexOf(tile) !== -1
-            return res || isSolid
-        }, false)
-    },
-
-    _isSolidTileAtXY: function (x: number, y: number, direction: EDirection): boolean {
-
-        let position = {x, y}
-
-        switch (direction) {
-            case EDirection.Left:
-                position.x -= this.tSize
-                break
-            case EDirection.Right:
-                position.x += this.tSize
-                break
-            case EDirection.Up:
-                position.y -= this.tSize
-                break
-            case EDirection.Down:
-                position.y += this.tSize
-                break
-            default:
-                break
-        }
-
+    isSolidTileAtXY: function (position: TPosition): boolean {
         const col: number = Math.floor(position.x / this.tSize)
         const row: number = Math.floor(position.y / this.tSize)
 
         const tile = this.getTile(1, col, row)
 
         return APP_COLLISION_TILE.indexOf(tile) !== -1;
-
-
     },
 
     getCol: function (x: number) {

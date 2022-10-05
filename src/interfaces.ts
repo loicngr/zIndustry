@@ -30,5 +30,7 @@ export interface ICharacter {
 
     handleMovement(game: IGame, updateDelta: number): void
 
-    getFrontPositionDirection(): TPosition
+    predictNextPosition(position?: TPosition): TPosition
+
+    predictNextPositionTile(position?: TPosition): TPosition
 }
