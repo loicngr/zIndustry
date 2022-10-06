@@ -9,12 +9,6 @@ export enum EKey {
     F1 = 'F1'
 }
 
-export enum EComponentType {
-    Player,
-    Fence,
-    Door
-}
-
 export enum EDirection {
     Up = 'up',
     Down = 'down',

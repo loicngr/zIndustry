@@ -44,6 +44,7 @@ export class Game implements IGame {
     load(): Promise<HTMLImageElement | string>[] {
         return [
             this.loader.loadImage('tiles', './tiles/tiles.png'),
+            this.loader.loadImage('sheet', './tiles/sheet_transparent.png'),
             this.loader.loadImage(APP_TILE_CHARACTER_1_DATA.key, `./tiles/${APP_TILE_CHARACTER_1_DATA.key}.png`)
         ]
     }
@@ -143,18 +144,16 @@ export class Game implements IGame {
 
         const startCol = Math.floor(this.camera.x / this.map.tSize)
         const endCol = startCol + (this.camera.width / this.map.tSize)
+
         const startRow = Math.floor(this.camera.y / this.map.tSize)
         const endRow = startRow + (this.camera.height / this.map.tSize)
+
         const offsetX = -this.camera.x + startCol * this.map.tSize
         const offsetY = -this.camera.y + startRow * this.map.tSize
 
         for (let c = startCol; c <= endCol; ++c) {
             for (let r = startRow; r <= endRow; ++r) {
                 const tile = this.map.getTile(layerIndex, c, r)
-
-                if (!tile) {
-                    continue
-                }
 
                 const x = (c - startCol) * this.map.tSize + offsetX
                 const y = (r - startRow) * this.map.tSize + offsetY

@@ -42,7 +42,7 @@ export const APP_MAP: TMap = {
         [
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1,
+            1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1,
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1,
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1,
             1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -67,7 +67,7 @@ export const APP_MAP: TMap = {
         ],
         [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -102,12 +102,21 @@ export const APP_MAP: TMap = {
     },
 
     isSolidTileAtXY: function (position: TPosition): boolean {
-        const col: number = Math.floor(position.x / this.tSize)
-        const row: number = Math.floor(position.y / this.tSize)
+        // loop in layers
+        for (const layersKey in this.layers) {
+            const col: number = Math.floor(position.x / this.tSize)
+            const row: number = Math.floor(position.y / this.tSize)
 
-        const tile = this.getTile(1, col, row)
+            // get tile in current layer at col and row location
+            const tile = this.getTile(parseInt(layersKey), col, row)
 
-        return APP_COLLISION_TILE.indexOf(tile) !== -1;
+            // is tile set as collide
+            if (APP_COLLISION_TILE.indexOf(tile) !== -1) {
+                return true
+            }
+        }
+
+        return false
     },
 
     getCol: function (x: number) {
