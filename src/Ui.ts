@@ -27,7 +27,7 @@ export class Ui {
         const liKeyQ = document.createElement('li')
         liKeyQ.innerText = `Q: Move Left`
         const liKeyE = document.createElement('li')
-        liKeyE.innerText = `E: Place bush`
+        liKeyE.innerText = `E: Place conveyor`
         const liKeyF = document.createElement('li')
         liKeyF.innerText = `F: Debug in console`
         const liKeyF1 = document.createElement('li')

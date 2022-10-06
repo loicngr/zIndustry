@@ -1,11 +1,11 @@
 import {Loader} from "./Loader"
-import {APP_DEBUG, APP_MAP, APP_MAP_SIZE, APP_TILE_CHARACTER_1_DATA} from "./consts"
+import {APP_DEBUG, APP_MAP, APP_MAP_SIZE, APP_TILE_ANIMATION, APP_TILE_CHARACTER_1_DATA, numberInNumber} from "./consts"
 import {Keyboard} from "./Keyboard"
 import {EKey} from "./enums"
 import {Camera} from "./Camera"
 import {Character} from "./Character"
 import {ICharacter, IGame} from "./interfaces"
-import {TMap, TPosition} from "./types"
+import {TMap, TPosition, TTileAnimation} from "./types"
 import {devLog} from "./utils"
 import {Ui} from "./Ui";
 
@@ -20,6 +20,7 @@ export class Game implements IGame {
     readonly map: TMap
     tileAtlas: HTMLImageElement | null
     shouldDrawGrid: boolean
+    tileAnimation: TTileAnimation
 
     constructor(context: CanvasRenderingContext2D) {
         this.context = context
@@ -31,6 +32,7 @@ export class Game implements IGame {
         this.ui = new Ui()
         this.map = APP_MAP
         this.shouldDrawGrid = APP_DEBUG
+        this.tileAnimation = APP_TILE_ANIMATION
     }
 
     run(): void {
@@ -44,7 +46,6 @@ export class Game implements IGame {
     load(): Promise<HTMLImageElement | string>[] {
         return [
             this.loader.loadImage('tiles', './tiles/tiles.png'),
-            this.loader.loadImage('sheet', './tiles/sheet_transparent.png'),
             this.loader.loadImage(APP_TILE_CHARACTER_1_DATA.key, `./tiles/${APP_TILE_CHARACTER_1_DATA.key}.png`)
         ]
     }
@@ -54,11 +55,12 @@ export class Game implements IGame {
         const _APP_MAP_SIZE = APP_MAP_SIZE()
 
         this.context.clearRect(0, 0, _APP_MAP_SIZE.width, _APP_MAP_SIZE.height)
-        const delta = Math.min((elapsed - this.previousElapsed) / 1000.0, 0.25)
+        const elapsedDelta = elapsed - this.previousElapsed
+        const delta = Math.min((elapsedDelta) / 1000.0, 0.25)
 
         this.previousElapsed = elapsed
         this.update(delta)
-        this.render()
+        this.render(delta)
     }
 
     init(): void {
@@ -97,22 +99,23 @@ export class Game implements IGame {
         if (this.keyboard.isPressed(EKey.E) && this.character) {
             this.keyboard.resetKey(EKey.E)
 
-            this.spawnItem(this.character.predictNextPositionTile(), 5)
+            this.spawnItem(0, this.character.predictNextPositionTile(), 8)
         }
 
         this.camera.update()
     }
 
-    spawnItem(position: TPosition, tile: number): void {
+    spawnItem(layerIndex: number, position: TPosition, tile: number): void {
         const col = this.map.getCol(position.x)
         const row = this.map.getRow(position.y)
 
-        this.map.setTile(1, col, row, tile)
+        this.map.setTile(layerIndex, col, row, tile)
     }
 
-    render(): void {
+    render(delta: number): void {
         // background
-        this.drawLayer(0)
+        this.drawLayer(0, delta)
+
 
         if (this.character && this.character.image && this.character.tileData) {
             let characterTile: number = this.character.tileData.tiles[this.character.direction]
@@ -131,13 +134,13 @@ export class Game implements IGame {
         }
 
         // top
-        this.drawLayer(1)
+        this.drawLayer(1, delta)
 
         if (this.shouldDrawGrid)
             this.drawGrid()
     }
 
-    drawLayer(layerIndex: number): void {
+    drawLayer(layerIndex: number, _delta: number): void {
         if (!this.tileAtlas || !this.camera) {
             return
         }
@@ -153,15 +156,30 @@ export class Game implements IGame {
 
         for (let c = startCol; c <= endCol; ++c) {
             for (let r = startRow; r <= endRow; ++r) {
-                const tile = this.map.getTile(layerIndex, c, r)
+                let tile: number = this.map.getTile(layerIndex, c, r)
 
                 const x = (c - startCol) * this.map.tSize + offsetX
                 const y = (r - startRow) * this.map.tSize + offsetY
 
+                if (tile in this.tileAnimation) {
+                    const deltaLastTick = this.previousElapsed - this.tileAnimation[tile].lastTick
+                    if (deltaLastTick > this.tileAnimation[tile].tick) {
+                        this.tileAnimation[tile].state += 1
+
+                        if (this.tileAnimation[tile].state >= this.tileAnimation[tile].tiles.length) {
+                            this.tileAnimation[tile].state = 0
+                        }
+
+                        this.tileAnimation[tile].lastTick = this.previousElapsed
+                    }
+
+                    tile = this.tileAnimation[tile].tiles[this.tileAnimation[tile].state]
+                }
+
                 this.context.drawImage(
                     this.tileAtlas,
-                    (tile - 1) * this.map.tSize,
-                    0,
+                    ((tile - 1) % this.map.tileData.col) * this.map.tSize,
+                    numberInNumber(tile, this.map.tileData.col) * this.map.tSize,
                     this.map.tSize,
                     this.map.tSize,
                     Math.round(x),

@@ -1,4 +1,4 @@
-import {TMap, TPosition} from "./types"
+import {TMap, TPosition, TTileAnimation} from "./types"
 import {EDirection} from "./enums"
 
 export const APP_DEBUG = import.meta.env.DEV
@@ -23,6 +23,13 @@ export const APP_MAP_SIZE = (): { width: number, height: number } => {
 
 export const APP_COLLISION_TILE = [3, 5]
 
+export const APP_TILE_1_DATA: TMap = {
+    key: 'tiles',
+    tSize: APP_TILE_SIZE,
+    col: 5,
+    row: 2
+}
+
 export const APP_TILE_CHARACTER_1_DATA: TMap = {
     key: 'character1_idle',
     tSize: APP_TILE_SIZE,
@@ -34,18 +41,42 @@ export const APP_TILE_CHARACTER_1_DATA: TMap = {
     }
 }
 
+// Simple count number of time we have "a" in "b"
+export const numberInNumber = (a: number, b: number): number => {
+    let cpt = 0
+    let newA = a
+    while (true) {
+        if (cpt === 0 && a <= b || newA < b) {
+            return cpt
+        }
+        newA -= b
+        ++cpt
+    }
+}
+
+
+export const APP_TILE_ANIMATION: TTileAnimation = {
+    8: {
+        tiles: [8, 9],
+        lastTick: 0,
+        tick: 100,
+        state: 0
+    }
+}
+
 export const APP_MAP: TMap = {
     cols: 24,
     rows: 24,
+    tileData: APP_TILE_1_DATA,
     tSize: APP_TILE_SIZE,
     layers: [
         [
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 13, 1, 1, 1, 1, 2, 2, 1,
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1,
-            1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 7, 6, 2, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,

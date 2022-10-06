@@ -24,11 +24,11 @@ export interface IGame {
 
     update(delta: number): void
 
-    spawnItem(position: TPosition, tile: number): void
+    spawnItem(layerIndex: number, position: TPosition, tile: number): void
 
-    render(): void
+    render(delta: number): void
 
-    drawLayer(index: number): void
+    drawLayer(index: number, delta: number): void
 
     drawGrid(): void
 }
