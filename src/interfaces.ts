@@ -13,6 +13,24 @@ export interface IGame {
     character: undefined | ICharacter
     readonly map: TMap
     tileAtlas: HTMLImageElement | null
+
+    run(): void
+
+    load(): Promise<HTMLImageElement | string>[]
+
+    tick(elapsed: number): void
+
+    init(): void
+
+    update(delta: number): void
+
+    spawnItem(position: TPosition, tile: number): void
+
+    render(): void
+
+    drawLayer(index: number): void
+
+    drawGrid(): void
 }
 
 export interface ICharacter {

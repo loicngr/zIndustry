@@ -33,7 +33,7 @@ export class Game implements IGame {
         this.shouldDrawGrid = APP_DEBUG
     }
 
-    public run(): void {
+    run(): void {
         Promise.all(this.load())
             .then(() => {
                 this.init()
@@ -41,14 +41,14 @@ export class Game implements IGame {
             })
     }
 
-    private load(): Promise<HTMLImageElement | string>[] {
+    load(): Promise<HTMLImageElement | string>[] {
         return [
             this.loader.loadImage('tiles', './tiles/tiles.png'),
             this.loader.loadImage(APP_TILE_CHARACTER_1_DATA.key, `./tiles/${APP_TILE_CHARACTER_1_DATA.key}.png`)
         ]
     }
 
-    private tick(elapsed: number): void {
+    tick(elapsed: number): void {
         requestAnimationFrame(this.tick.bind(this))
         const _APP_MAP_SIZE = APP_MAP_SIZE()
 
@@ -60,7 +60,7 @@ export class Game implements IGame {
         this.render()
     }
 
-    private init(): void {
+    init(): void {
         const keysValues = Object.values(EKey)
         this.keyboard.listenForEvents(keysValues)
 
@@ -73,7 +73,7 @@ export class Game implements IGame {
         this.camera.follow(this.character)
     }
 
-    private update(delta: number): void {
+    update(delta: number): void {
         if (!this.character || !this.camera) {
             return
         }
@@ -102,14 +102,14 @@ export class Game implements IGame {
         this.camera.update()
     }
 
-    private spawnItem(position: TPosition, tile: number): void {
+    spawnItem(position: TPosition, tile: number): void {
         const col = this.map.getCol(position.x)
         const row = this.map.getRow(position.y)
 
         this.map.setTile(1, col, row, tile)
     }
 
-    private render(): void {
+    render(): void {
         // background
         this.drawLayer(0)
 
@@ -136,7 +136,7 @@ export class Game implements IGame {
             this.drawGrid()
     }
 
-    private drawLayer(layerIndex: number): void {
+    drawLayer(layerIndex: number): void {
         if (!this.tileAtlas || !this.camera) {
             return
         }
@@ -174,7 +174,7 @@ export class Game implements IGame {
         }
     }
 
-    private drawGrid(): void {
+    drawGrid(): void {
         if (!this.camera) {
             return
         }
