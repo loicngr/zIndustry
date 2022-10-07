@@ -57,7 +57,7 @@ export class Game implements IGame {
 
         this.previousElapsed = elapsed
         this.update(delta)
-        this.render(delta)
+        this.render()
     }
 
     init(): void {
@@ -113,9 +113,9 @@ export class Game implements IGame {
         this.map.setTile(layerIndex, col, row, tile)
     }
 
-    render(delta: number): void {
+    render(): void {
         // background
-        this.drawLayer(0, delta)
+        this.drawLayer(0)
 
 
         if (this.character && this.character.image && this.character.tileData) {
@@ -135,13 +135,13 @@ export class Game implements IGame {
         }
 
         // top
-        this.drawLayer(1, delta)
+        this.drawLayer(1)
 
         if (this.shouldDrawGrid)
             this.drawGrid()
     }
 
-    drawLayer(layerIndex: number, _delta: number): void {
+    drawLayer(layerIndex: number): void {
         if (!this.tileAtlas || !this.camera) {
             return
         }
@@ -157,7 +157,11 @@ export class Game implements IGame {
 
         for (let c = startCol; c <= endCol; ++c) {
             for (let r = startRow; r <= endRow; ++r) {
-                let tile: number = this.map.getTile(layerIndex, c, r)
+                let tile: number | undefined = this.map.getTile(layerIndex, c, r)
+
+                if (undefined === tile) {
+                    continue
+                }
 
                 const x = (c - startCol) * this.map.tSize + offsetX
                 const y = (r - startRow) * this.map.tSize + offsetY
