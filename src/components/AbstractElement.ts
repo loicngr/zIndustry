@@ -1,6 +1,6 @@
 import {IUiComponent} from "../interfaces";
 
-export abstract class AbstractBasic extends HTMLElement implements IUiComponent {
+export abstract class AbstractElement extends HTMLElement implements IUiComponent {
   static get observedAttributes(): string[] {
     return []
   }

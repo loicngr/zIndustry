@@ -1,6 +1,6 @@
-import {AbstractBasic} from "./AbstractBasic"
+import {AbstractElement} from "./AbstractElement"
 
-export class Basic extends AbstractBasic {
+export class KeyboardElement extends AbstractElement {
   constructor() {
     super()
 

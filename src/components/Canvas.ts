@@ -1,8 +1,8 @@
-import {AbstractBasic} from "./AbstractBasic"
+import {AbstractElement} from "./AbstractElement"
 import {Game} from "../Game"
 import {APP_MAP_SIZE} from "../consts";
 
-export class Canvas extends AbstractBasic {
+export class Canvas extends AbstractElement {
   constructor() {
     super()
 

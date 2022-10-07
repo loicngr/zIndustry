@@ -1,8 +1,8 @@
 import './style.css'
-import {Basic} from "./components/Basic"
-import {Canvas} from "./components/Canvas"
+import {GameElement} from "./components/GameElement"
+import {KeyboardElement} from "./components/KeyboardElement";
 
 window.onload = () => {
-    customElements.define('basic-element', Basic)
-    customElements.define('canvas-element', Canvas)
+    customElements.define('game-element', GameElement)
+    customElements.define('keyboard-element', KeyboardElement)
 }
