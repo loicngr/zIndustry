@@ -1,12 +1,12 @@
 import {Loader} from "./Loader"
-import {APP_DEBUG, APP_MAP, APP_MAP_SIZE, APP_TILE_ANIMATION, APP_TILE_CHARACTER_1_DATA, numberInNumber} from "./consts"
+import {APP_DEBUG, APP_MAP, APP_MAP_SIZE, APP_TILE_ANIMATION, APP_TILE_CHARACTER_1_DATA} from "./consts"
 import {Keyboard} from "./Keyboard"
 import {EKey} from "./enums"
 import {Camera} from "./Camera"
 import {Character} from "./Character"
 import {ICharacter, IGame} from "./interfaces"
 import {TMap, TPosition, TTileAnimation} from "./types"
-import {devLog} from "./utils"
+import {devLog, numberInNumber} from "./utils"
 import {Ui} from "./Ui";
 
 export class Game implements IGame {
