@@ -7,8 +7,8 @@ const APP_TILE_SIZE = 64
 
 const APP_MAX_MAP_SIZE = APP_TILE_SIZE * 24
 
-export const APP_MAP_SIZE = (): { width: number, height: number } => {
-    let {innerWidth: width, innerHeight: height} = window
+export const APP_MAP_SIZE = (_window?: Window): { width: number, height: number } => {
+    let {innerWidth: width, innerHeight: height} = _window ?? window
 
     if (width > APP_MAX_MAP_SIZE) {
         width = APP_MAX_MAP_SIZE
@@ -110,6 +110,16 @@ export const APP_MAP: TMap = {
         ]
     ],
 
+    getTileInAllLayers: function (col: number, row: number): number[] {
+        const tiles: number[] = []
+
+        for (const layersKey in this.layers) {
+            tiles.push(this.getTile(parseInt(layersKey), col, row))
+        }
+
+        return tiles
+    },
+
     getTile: function (layerIndex: number, col: number, row: number): number {
         return this.layers[layerIndex][row * APP_MAP.cols + col]
     },
@@ -128,6 +138,18 @@ export const APP_MAP: TMap = {
             const tile = this.getTile(parseInt(layersKey), col, row)
 
             // is tile set as collide
+            if (APP_COLLISION_TILE.indexOf(tile) !== -1) {
+                return true
+            }
+        }
+
+        return false
+    },
+
+    isSolidTileAtRowCol: function (col: number, row: number): boolean {
+        for (const layersKey in this.layers) {
+            const tile = this.getTile(parseInt(layersKey), col, row)
+
             if (APP_COLLISION_TILE.indexOf(tile) !== -1) {
                 return true
             }

@@ -7,7 +7,6 @@ import {Character} from "./Character"
 import {ICharacter, IGame} from "./interfaces"
 import {TMap, TPosition, TTileAnimation} from "./types"
 import {devLog, numberInNumber} from "./utils"
-import {Ui} from "./Ui";
 
 export class Game implements IGame {
     readonly context: CanvasRenderingContext2D
@@ -16,7 +15,6 @@ export class Game implements IGame {
     readonly keyboard: Keyboard
     camera: undefined | Camera
     character: undefined | ICharacter
-    ui: Ui
     readonly map: TMap
     tileAtlas: HTMLImageElement | null
     shouldDrawGrid: boolean
@@ -29,7 +27,6 @@ export class Game implements IGame {
 
         this.loader = new Loader()
         this.keyboard = new Keyboard()
-        this.ui = new Ui()
         this.map = APP_MAP
         this.shouldDrawGrid = APP_DEBUG
         this.tileAnimation = APP_TILE_ANIMATION
@@ -108,6 +105,10 @@ export class Game implements IGame {
     spawnItem(layerIndex: number, position: TPosition, tile: number): void {
         const col = this.map.getCol(position.x)
         const row = this.map.getRow(position.y)
+
+        if (this.map.isSolidTileAtRowCol(col, row)) {
+            return
+        }
 
         this.map.setTile(layerIndex, col, row, tile)
     }

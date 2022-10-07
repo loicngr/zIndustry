@@ -1,12 +1,21 @@
-import {AbstractElement} from "./AbstractElement"
+import {customElement} from "lit/decorators.js"
+import {css, html, LitElement} from "lit";
 
-export class KeyboardElement extends AbstractElement {
-  constructor() {
-    super()
+@customElement('keyboard-element')
+export class KeyboardElement extends LitElement {
+    static styles = css`
+          ul {
+            position: fixed;
+            inset: 0;
+    
+            text-shadow: 1px 1px 2px black;
+            text-transform: uppercase;
+            font-size: 12px;
+          }
+        `
 
-    this._shadowDOM.innerHTML = `
-        ${this.buildStyles()}
-        <div class="wrapper">
+    protected render(): unknown {
+        return html`
             <ul>
                 <li>Z: Move Up</li>
                 <li>S: Move Down</li>
@@ -16,20 +25,6 @@ export class KeyboardElement extends AbstractElement {
                 <li>F: Debug in console</li>
                 <li>F1: Toggle grid</li>
             </ul>
-        </div>
-    `
-  }
-
-  buildStyles(): string {
-    return `<style>
-      .wrapper {
-        position: fixed;
-        inset: 0;
-
-        text-shadow: 1px 1px 2px black;
-        text-transform: uppercase;
-        font-size: 12px;
-      }
-    </style>`
-  }
+        `
+    }
 }
