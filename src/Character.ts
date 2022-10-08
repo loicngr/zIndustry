@@ -3,12 +3,13 @@ import {TMap, TPosition} from "./types"
 import {ICharacter, IGame} from "./interfaces"
 import {Loader} from "./Loader"
 import {EDirection, EKey} from "./enums"
+import {Map} from "./Map"
 
 export class Character extends Component implements ICharacter {
     public direction: EDirection
     public tileData: TMap
 
-    constructor(loader: Loader, map: TMap, x: number, y: number, tileData: TMap) {
+    constructor(loader: Loader, map: Map, x: number, y: number, tileData: TMap) {
         super(map, x, y)
 
         this.image = loader.getImage(tileData.key)
@@ -24,8 +25,8 @@ export class Character extends Component implements ICharacter {
             this.x += nextXDirection
             this.y += nextYDirection
 
-            const maxX = this.map.cols * this.map.tSize
-            const maxY = this.map.rows * this.map.tSize
+            const maxX = this.map.mapConfig.width * this.map.mapConfig.tileSize
+            const maxY = this.map.mapConfig.height * this.map.mapConfig.tileSize
 
             this.x = Math.max(0, Math.min(this.x, maxX))
             this.y = Math.max(0, Math.min(this.y, maxY))
@@ -39,16 +40,16 @@ export class Character extends Component implements ICharacter {
 
         switch (this.direction) {
             case EDirection.Left:
-                position.x -= (this.map.tSize / 2)
+                position.x -= (this.map.mapConfig.tileSize / 2)
                 break
             case EDirection.Right:
-                position.x += (this.map.tSize / 2)
+                position.x += (this.map.mapConfig.tileSize / 2)
                 break
             case EDirection.Up:
-                position.y -= (this.map.tSize / 2)
+                position.y -= (this.map.mapConfig.tileSize / 2)
                 break
             case EDirection.Down:
-                position.y += (this.map.tSize / 2)
+                position.y += (this.map.mapConfig.tileSize / 2)
                 break
             default:
                 break
@@ -64,16 +65,16 @@ export class Character extends Component implements ICharacter {
 
         switch (this.direction) {
             case EDirection.Left:
-                position.x -= this.map.tSize
+                position.x -= this.map.mapConfig.tileSize
                 break
             case EDirection.Right:
-                position.x += this.map.tSize
+                position.x += this.map.mapConfig.tileSize
                 break
             case EDirection.Up:
-                position.y -= this.map.tSize
+                position.y -= this.map.mapConfig.tileSize
                 break
             case EDirection.Down:
-                position.y += this.map.tSize
+                position.y += this.map.mapConfig.tileSize
                 break
             default:
                 break

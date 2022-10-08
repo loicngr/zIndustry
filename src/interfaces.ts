@@ -1,8 +1,9 @@
 import {EDirection} from "./enums"
 import {TMap, TPosition} from "./types"
 import {Loader} from "./Loader";
-import {Keyboard} from "./Keyboard";
-import {Camera} from "./Camera";
+import {Keyboard} from "./Keyboard"
+import {Camera} from "./Camera"
+import {Map} from "./Map"
 
 export interface IUiComponent {
     readonly _shadowDOM: ShadowRoot
@@ -32,7 +33,7 @@ export interface IGame {
     readonly keyboard: Keyboard
     camera: undefined | Camera
     character: undefined | ICharacter
-    readonly map: TMap
+    map: undefined | Map
     tileAtlas: HTMLImageElement | null
 
     run(): void

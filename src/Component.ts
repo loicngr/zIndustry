@@ -1,8 +1,7 @@
-import {APP_MAP} from "./consts"
-import {TMap} from "./types"
+import {Map} from "./Map"
 
 export class Component {
-    public map: TMap
+    public map: Map
     public screenX: number
     public screenY: number
     public width: number
@@ -12,7 +11,7 @@ export class Component {
     public speed: number
     public image: HTMLImageElement | null
 
-    constructor(map: TMap, x: number, y: number) {
+    constructor(map: Map, x: number, y: number) {
         this.map = map
 
         this.x = x
@@ -23,8 +22,8 @@ export class Component {
 
         this.speed = 256 // pixels per second
 
-        this.width = APP_MAP.tSize
-        this.height = APP_MAP.tSize
+        this.width = map.mapConfig.tileSize
+        this.height = map.mapConfig.tileSize
 
         this.image = null
     }

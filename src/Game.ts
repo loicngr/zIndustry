@@ -1,12 +1,13 @@
 import {Loader} from "./Loader"
-import {APP_DEBUG, APP_MAP, APP_MAP_SIZE, APP_TILE_ANIMATION, APP_TILE_CHARACTER_1_DATA} from "./consts"
+import {APP_DEBUG, APP_MAP_SIZE, APP_TILE_ANIMATION, APP_TILE_CHARACTER_1_DATA} from "./consts"
 import {Keyboard} from "./Keyboard"
 import {EKey} from "./enums"
 import {Camera} from "./Camera"
 import {Character} from "./Character"
 import {ICharacter, IGame} from "./interfaces"
-import {TMap, TPosition, TTileAnimation} from "./types"
+import {TPosition, TTileAnimation} from "./types"
 import {devLog, numberInNumber} from "./utils"
+import {Map} from "./Map"
 
 export class Game implements IGame {
     readonly context: CanvasRenderingContext2D
@@ -15,10 +16,10 @@ export class Game implements IGame {
     readonly keyboard: Keyboard
     camera: undefined | Camera
     character: undefined | ICharacter
-    readonly map: TMap
     tileAtlas: HTMLImageElement | null
     shouldDrawGrid: boolean
     tileAnimation: TTileAnimation
+    map: undefined | Map
 
     constructor(context: CanvasRenderingContext2D) {
         this.context = context
@@ -27,7 +28,6 @@ export class Game implements IGame {
 
         this.loader = new Loader()
         this.keyboard = new Keyboard()
-        this.map = APP_MAP
         this.shouldDrawGrid = APP_DEBUG
         this.tileAnimation = APP_TILE_ANIMATION
     }
@@ -42,6 +42,8 @@ export class Game implements IGame {
 
     load(): Promise<HTMLImageElement | string>[] {
         return [
+            this.loader.loadFile('tileConfig', `./tiles/tiles.json`, true),
+            this.loader.loadFile('mapConfig', `./map/map.json`, true),
             this.loader.loadImage('tiles', './tiles/tiles.png'),
             this.loader.loadImage(APP_TILE_CHARACTER_1_DATA.key, `./tiles/${APP_TILE_CHARACTER_1_DATA.key}.png`)
         ]
@@ -61,6 +63,10 @@ export class Game implements IGame {
     }
 
     init(): void {
+        const tileConfig = this.loader.getFile('tileConfig')
+        const mapConfig = this.loader.getFile('mapConfig')
+        this.map = new Map(mapConfig, tileConfig)
+
         const keysValues = Object.values(EKey)
         this.keyboard.listenForEvents(keysValues)
 
@@ -96,26 +102,30 @@ export class Game implements IGame {
         if (this.keyboard.isPressed(EKey.E) && this.character) {
             this.keyboard.resetKey(EKey.E)
 
-            this.spawnItem(0, this.character.predictNextPositionTile(), 8)
+            this.spawnItem(1, this.character.predictNextPositionTile(), 8)
         }
 
         this.camera.update()
     }
 
     spawnItem(layerIndex: number, position: TPosition, tile: number): void {
-        const col = this.map.getCol(position.x)
-        const row = this.map.getRow(position.y)
-
-        if (this.map.isSolidTileAtRowCol(col, row)) {
+        if (!this.map) {
             return
         }
 
-        this.map.setTile(layerIndex, col, row, tile)
+        const width = this.map.getWidth(position.x)
+        const height = this.map.getHeight(position.y)
+
+        if (this.map.isSolidTileAtRowCol(width, height)) {
+            return
+        }
+
+        this.map.setTile(layerIndex, width, height, tile)
     }
 
     render(): void {
         // background
-        this.drawLayer(0)
+        this.drawLayer(1)
 
 
         if (this.character && this.character.image && this.character.tileData) {
@@ -135,25 +145,25 @@ export class Game implements IGame {
         }
 
         // top
-        this.drawLayer(1)
+        this.drawLayer(2)
 
         if (this.shouldDrawGrid)
             this.drawGrid()
     }
 
     drawLayer(layerIndex: number): void {
-        if (!this.tileAtlas || !this.camera) {
+        if (!this.tileAtlas || !this.camera || !this.map) {
             return
         }
 
-        const startCol = Math.floor(this.camera.x / this.map.tSize)
-        const endCol = startCol + (this.camera.width / this.map.tSize)
+        const startCol = Math.floor(this.camera.x / this.map.mapConfig.tileSize)
+        const endCol = startCol + (this.camera.width / this.map.mapConfig.tileSize)
 
-        const startRow = Math.floor(this.camera.y / this.map.tSize)
-        const endRow = startRow + (this.camera.height / this.map.tSize)
+        const startRow = Math.floor(this.camera.y / this.map.mapConfig.tileSize)
+        const endRow = startRow + (this.camera.height / this.map.mapConfig.tileSize)
 
-        const offsetX = -this.camera.x + startCol * this.map.tSize
-        const offsetY = -this.camera.y + startRow * this.map.tSize
+        const offsetX = -this.camera.x + startCol * this.map.mapConfig.tileSize
+        const offsetY = -this.camera.y + startRow * this.map.mapConfig.tileSize
 
         for (let c = startCol; c <= endCol; ++c) {
             for (let r = startRow; r <= endRow; ++r) {
@@ -163,8 +173,8 @@ export class Game implements IGame {
                     continue
                 }
 
-                const x = (c - startCol) * this.map.tSize + offsetX
-                const y = (r - startRow) * this.map.tSize + offsetY
+                const x = (c - startCol) * this.map.mapConfig.tileSize + offsetX
+                const y = (r - startRow) * this.map.mapConfig.tileSize + offsetY
 
                 if (tile in this.tileAnimation) {
                     const deltaLastTick = this.previousElapsed - this.tileAnimation[tile].lastTick
@@ -181,34 +191,37 @@ export class Game implements IGame {
                     tile = this.tileAnimation[tile].tiles[this.tileAnimation[tile].state]
                 }
 
+                const sx = ((tile - 1) % this.map.tileConfig.columns) * this.map.mapConfig.tileSize
+                const sy = numberInNumber(tile, this.map.tileConfig.columns) * this.map.mapConfig.tileSize
+
                 this.context.drawImage(
                     this.tileAtlas,
-                    ((tile - 1) % this.map.tileData.col) * this.map.tSize,
-                    numberInNumber(tile, this.map.tileData.col) * this.map.tSize,
-                    this.map.tSize,
-                    this.map.tSize,
+                    sx,
+                    sy,
+                    this.map.mapConfig.tileSize,
+                    this.map.mapConfig.tileSize,
                     Math.round(x),
                     Math.round(y),
-                    this.map.tSize,
-                    this.map.tSize
+                    this.map.mapConfig.tileSize,
+                    this.map.mapConfig.tileSize
                 )
             }
         }
     }
 
     drawGrid(): void {
-        if (!this.camera) {
+        if (!this.camera || !this.map) {
             return
         }
 
-        const width = this.map.cols * this.map.tSize
-        const height = this.map.rows * this.map.tSize
+        const width = this.map.mapConfig.width * this.map.mapConfig.tileSize
+        const height = this.map.mapConfig.height * this.map.mapConfig.tileSize
 
         let x
         let y
 
-        const mapRows = this.map.rows
-        const mapCols = this.map.cols
+        const mapRows = this.map.mapConfig.height
+        const mapCols = this.map.mapConfig.width
 
         const _common = (x: number, y: number, lineToX: number, lineToY: number) => {
             this.context.beginPath()
@@ -219,13 +232,13 @@ export class Game implements IGame {
 
         for (let r = 0; r < mapRows; ++r) {
             x = -this.camera.x
-            y = r * this.map.tSize - this.camera.y
+            y = r * this.map.mapConfig.tileSize - this.camera.y
 
             _common(x, y, width, y)
         }
 
         for (let c = 0; c < mapCols; ++c) {
-            x = c * this.map.tSize - this.camera.x
+            x = c * this.map.mapConfig.tileSize - this.camera.x
             y = -this.camera.y
 
             _common(x, y, x, height)

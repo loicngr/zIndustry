@@ -1,4 +1,4 @@
-import {TMap} from "./types"
+import {Map} from "./Map"
 import {ICharacter} from "./interfaces"
 
 export class Camera {
@@ -10,14 +10,14 @@ export class Camera {
     private readonly maxY: number
     private character: undefined | ICharacter
 
-    constructor(map: TMap, width: number, height: number) {
+    constructor(map: Map, width: number, height: number) {
         this.width = width
         this.height = height
         this.x = 0
         this.y = 0
 
-        this.maxX = map.cols * map.tSize - width
-        this.maxY = map.rows * map.tSize - height
+        this.maxX = map.mapConfig.width * map.mapConfig.tileSize - width
+        this.maxY = map.mapConfig.height * map.mapConfig.tileSize - height
     }
 
     public follow(character: ICharacter) {

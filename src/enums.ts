@@ -16,3 +16,7 @@ export enum EDirection {
     Left = 'left',
     None = 'down'
 }
+
+export enum EConfigTypes {
+    Bool = 'bool'
+}

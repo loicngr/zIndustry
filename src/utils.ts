@@ -23,11 +23,5 @@ export const numberInNumber = (a: number, b: number): number => {
 
         newA -= b
         ++cpt
-
-        if (cpt > 50) {
-            console.log(a)
-            console.log('WTF')
-            return 0
-        }
     }
 }
