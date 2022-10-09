@@ -1,6 +1,7 @@
-import {ConfigEnv, defineConfig, UserConfigExport} from 'vite';
+import {defineConfig} from 'vite'
+import type { UserConfigExport } from 'vite'
 
-export default function ({}: ConfigEnv): UserConfigExport {
+export default function (): UserConfigExport {
     return defineConfig({
         build: {minify: true},
         plugins: [],

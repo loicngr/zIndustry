@@ -1,7 +1,21 @@
-export type TKeyboard = Record<string, boolean>
+import { EDirection } from "../enums/direction";
 
-export type TPosition = { x: number, y: number }
+export type TKeyboard = Record<string, boolean>;
 
-export type TLoader = Record<string, HTMLImageElement | unknown>
+export type TPosition = { x: number; y: number };
 
-export type TJson = CallableFunction | number[][] | number[] | string | number | any | { [key: string]: TJson }
+export type TLoader = Record<string, HTMLImageElement | unknown>;
+
+export type TJson =
+  | CallableFunction
+  | number[][]
+  | number[]
+  | string
+  | number
+  | { [key: string]: TJson };
+
+export type TTileData = {
+  key: string;
+  tSize: number;
+  tiles: Record<EDirection, number>;
+};

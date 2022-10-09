@@ -1,0 +1,7 @@
+node_modules/
+dist/
+public/
+assets/
+**/*.d.ts
+.eslintrc.js
+.prettierrc.js
