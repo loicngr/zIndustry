@@ -2,7 +2,7 @@ import { customElement, property } from "lit/decorators.js";
 import type { PropertyValues } from "lit";
 import { html, LitElement } from "lit";
 import type { Ref } from "lit/directives/ref";
-import { createRef, ref } from "lit/directives/ref";
+import { createRef, ref } from "lit/directives/ref.js";
 import { APP_MAP_SIZE } from "../../common/consts";
 
 @customElement("canvas-element")
