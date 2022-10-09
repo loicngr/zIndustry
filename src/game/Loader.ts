@@ -1,4 +1,3 @@
-import safeGet from "lodash/get"
 import {TLoader} from "./types/common"
 
 export class Loader {
@@ -40,11 +39,23 @@ export class Loader {
         })
     }
 
-    public getImage(key: string): HTMLImageElement | null {
-        return safeGet(this.images, key, null)
+    public getImage(key: string): HTMLImageElement {
+        const image = this.images[key]
+
+        if (!image) {
+            throw new Error('Image not found')
+        }
+
+        return <HTMLImageElement>image
     }
 
-    public getFile(key: string): any | null {
-        return safeGet(this.files, key, null)
+    public getFile(key: string): unknown {
+        const file = this.files[key]
+
+        if (!file) {
+            throw new Error('File not found')
+        }
+
+        return file
     }
 }

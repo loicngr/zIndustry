@@ -4,6 +4,7 @@ import {Camera} from "../Camera"
 import {Map} from "../Map"
 import {TPosition} from "../types/common"
 import {ICharacter} from "./character"
+import {TTileAnimation} from "../types/tileAnimation"
 
 export interface IGame {
     readonly context: CanvasRenderingContext2D
@@ -12,8 +13,10 @@ export interface IGame {
     readonly keyboard: Keyboard
     camera: undefined | Camera
     character: undefined | ICharacter
-    map: undefined | Map
     tileAtlas: HTMLImageElement | null
+    shouldDrawGrid: boolean
+    tileAnimation: TTileAnimation
+    map: undefined | Map
 
     run(): void
 

@@ -25,3 +25,10 @@ export const numberInNumber = (a: number, b: number): number => {
         ++cpt
     }
 }
+
+/**
+ * Force type cast
+ */
+export function forceCast<T>(i: any): T {
+    return <T>(<unknown>i)
+}
