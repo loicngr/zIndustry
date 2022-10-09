@@ -1,7 +1,7 @@
-import { customElement } from "lit/decorators.js";
-import { css, html, LitElement } from "lit";
+import { customElement } from 'lit/decorators.js'
+import { css, html, LitElement } from 'lit'
 
-@customElement("keyboard-element")
+@customElement('keyboard-element')
 export class KeyboardElement extends LitElement {
   static styles = css`
     ul {
@@ -12,7 +12,7 @@ export class KeyboardElement extends LitElement {
       text-transform: uppercase;
       font-size: 12px;
     }
-  `;
+  `
 
   protected render(): unknown {
     return html`
@@ -25,6 +25,6 @@ export class KeyboardElement extends LitElement {
         <li>F: Debug in console</li>
         <li>F1: Toggle grid</li>
       </ul>
-    `;
+    `
   }
 }

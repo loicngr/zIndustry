@@ -1,3 +1,3 @@
 export enum EConfigTypes {
-  Bool = "bool",
+  Bool = 'bool',
 }
