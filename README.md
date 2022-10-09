@@ -1,12 +1,5 @@
-# zIndustry
+### Simple canvas game write in TypeScript. [Lit](https://lit.dev/) is used for UI.
 
-Simple canvas game
+### Inspiration
 
-# Keys
-
-- Up: Z
-- Left: Q
-- Right: D
-- Down: S
-- Place bush on map: E
-- Display position info in console: F
+- [w3Schools](https://www.w3schools.com/graphics/game_intro.asp)
