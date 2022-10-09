@@ -1,5 +1,5 @@
-import {TKeyboard} from "./types"
 import safeGet from "lodash/get"
+import {TKeyboard} from "./types/common"
 
 export class Keyboard {
     private readonly keys: TKeyboard

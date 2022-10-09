@@ -1,5 +1,5 @@
 import {Map} from "./Map"
-import {ICharacter} from "./interfaces"
+import {ICharacter} from "./interfaces/character"
 
 export class Camera {
     readonly height: number

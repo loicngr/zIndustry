@@ -1,5 +1,5 @@
 import {ReactiveController, ReactiveControllerHost} from 'lit'
-import {Game} from "../Game"
+import {Game} from "../../game/Game"
 
 export class GameController implements ReactiveController {
     host: ReactiveControllerHost

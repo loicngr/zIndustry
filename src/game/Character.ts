@@ -1,15 +1,17 @@
 import {Component} from "./Component"
-import {TMap, TPosition} from "./types"
-import {ICharacter, IGame} from "./interfaces"
+import {EDirection} from "./enums/direction"
 import {Loader} from "./Loader"
-import {EDirection, EKey} from "./enums"
 import {Map} from "./Map"
+import {TJson, TPosition} from "./types/common"
+import {EKey} from "./enums/key"
+import {ICharacter} from "./interfaces/character"
+import {IGame} from "./interfaces/game"
 
 export class Character extends Component implements ICharacter {
     public direction: EDirection
-    public tileData: TMap
+    public tileData: TJson
 
-    constructor(loader: Loader, map: Map, x: number, y: number, tileData: TMap) {
+    constructor(loader: Loader, map: Map, x: number, y: number, tileData: TJson) {
         super(map, x, y)
 
         this.image = loader.getImage(tileData.key)

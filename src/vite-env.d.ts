@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 import {KeyboardElement} from "./components/KeyboardElement"
 import {GameElement} from "./components/GameElement"
 import {CanvasElement} from "./components/CanvasElement"
@@ -11,3 +9,5 @@ declare global {
         "canvas-element": CanvasElement
     }
 }
+
+/// <reference types="vite/client" />

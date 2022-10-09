@@ -1,13 +1,16 @@
 import {Loader} from "./Loader"
-import {APP_DEBUG, APP_MAP_SIZE, APP_TILE_ANIMATION, APP_TILE_CHARACTER_1_DATA} from "./consts"
+import {APP_DEBUG, APP_TILE_ANIMATION, APP_TILE_CHARACTER_1_DATA} from "./consts"
 import {Keyboard} from "./Keyboard"
-import {EKey} from "./enums"
 import {Camera} from "./Camera"
 import {Character} from "./Character"
-import {ICharacter, IGame} from "./interfaces"
-import {TPosition, TTileAnimation} from "./types"
 import {devLog, numberInNumber} from "./utils"
 import {Map} from "./Map"
+import {TTileAnimation} from "./types/tileAnimation"
+import {EKey} from "./enums/key"
+import {TPosition} from "./types/common"
+import {IGame} from "./interfaces/game"
+import {ICharacter} from "./interfaces/character"
+import {APP_MAP_SIZE} from "../common/consts"
 
 export class Game implements IGame {
     readonly context: CanvasRenderingContext2D

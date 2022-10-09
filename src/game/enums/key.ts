@@ -8,15 +8,3 @@ export enum EKey {
     F = 'KeyF',
     F1 = 'F1'
 }
-
-export enum EDirection {
-    Up = 'up',
-    Down = 'down',
-    Right = 'right',
-    Left = 'left',
-    None = 'down'
-}
-
-export enum EConfigTypes {
-    Bool = 'bool'
-}

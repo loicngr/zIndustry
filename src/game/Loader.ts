@@ -1,9 +1,9 @@
-import {TLoader} from "./types"
 import safeGet from "lodash/get"
+import {TLoader} from "./types/common"
 
 export class Loader {
     private readonly images: TLoader
-    private readonly files: { [key: string]: any }
+    private readonly files: TLoader
 
     constructor() {
         this.images = {}

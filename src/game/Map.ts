@@ -1,5 +1,7 @@
-import {TMapConfig, TPosition, TTileConfig} from "./types"
 import {keyBy} from "lodash"
+import {TMapConfig} from "./types/mapConfig"
+import {TTileConfig} from "./types/tileConfig"
+import {TPosition} from "./types/common"
 
 export class Map {
     public mapConfig: TMapConfig

@@ -1,4 +1,4 @@
-import {APP_DEBUG} from "./consts";
+import {APP_DEBUG} from "./consts"
 
 export function devLog(message: string): void {
     if (!APP_DEBUG)

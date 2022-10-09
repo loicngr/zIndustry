@@ -1,7 +1,7 @@
 import {customElement, property} from "lit/decorators.js"
 import {html, LitElement, PropertyValues} from "lit"
-import {APP_MAP_SIZE} from "../consts"
 import {createRef, ref, Ref} from "lit/directives/ref.js"
+import {APP_MAP_SIZE} from "../../common/consts"
 
 @customElement('canvas-element')
 export class CanvasElement extends LitElement {
