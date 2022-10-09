@@ -37,11 +37,17 @@ export class Game implements IGame {
     this.tileAnimation = APP_TILE_ANIMATION
   }
 
-  run(): void {
-    Promise.all(this.load()).then(() => {
-      this.init()
-      requestAnimationFrame(this.tick.bind(this))
-    })
+  run(): Promise<boolean> {
+    return Promise.all(this.load())
+      .then(() => {
+        return this.init().then(() => {
+          requestAnimationFrame(this.tick.bind(this))
+          return true
+        })
+      })
+      .catch(() => {
+        return false
+      })
   }
 
   load(): Promise<HTMLImageElement | string>[] {
@@ -66,21 +72,25 @@ export class Game implements IGame {
     this.render()
   }
 
-  init(): void {
-    const tileConfig = forceCast<TTileConfig>(this.loader.getFile('tileConfig'))
-    const mapConfig = forceCast<TMapConfig>(this.loader.getFile('mapConfig'))
-    this.map = new Map(mapConfig, tileConfig)
+  init(): Promise<boolean> {
+    return new Promise((resolve) => {
+      const tileConfig = forceCast<TTileConfig>(this.loader.getFile('tileConfig'))
+      const mapConfig = forceCast<TMapConfig>(this.loader.getFile('mapConfig'))
+      this.map = new Map(mapConfig, tileConfig)
 
-    const keysValues = Object.values(EKey)
-    this.keyboard.listenForEvents(keysValues)
+      const keysValues = Object.values(EKey)
+      this.keyboard.listenForEvents(keysValues)
 
-    this.tileAtlas = this.loader.getImage('tiles')
-    this.character = new Character(this.loader, this.map, 160, 160, APP_TILE_CHARACTER_1_DATA)
+      this.tileAtlas = this.loader.getImage('tiles')
+      this.character = new Character(this.loader, this.map, 160, 160, APP_TILE_CHARACTER_1_DATA)
 
-    const _APP_MAP_SIZE = APP_MAP_SIZE()
+      const _APP_MAP_SIZE = APP_MAP_SIZE()
 
-    this.camera = new Camera(this.map, _APP_MAP_SIZE.width, _APP_MAP_SIZE.height)
-    this.camera.follow(this.character)
+      this.camera = new Camera(this.map, _APP_MAP_SIZE.width, _APP_MAP_SIZE.height)
+      this.camera.follow(this.character)
+
+      resolve(true)
+    })
   }
 
   update(delta: number): void {

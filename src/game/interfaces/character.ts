@@ -1,6 +1,8 @@
 import { EDirection } from '../enums/direction'
 import { IGame } from './game'
 import { TPosition, TTileData } from '../types/common'
+import { TActionBar } from '../types/actionBar'
+import { TInventory } from '../types/inventory'
 
 export interface ICharacter {
   tileData: TTileData
@@ -12,6 +14,8 @@ export interface ICharacter {
   screenX: number
   screenY: number
   direction: EDirection
+  actionBar: TActionBar
+  inventory: TInventory
 
   move(delta: number, x: number, y: number): void
 

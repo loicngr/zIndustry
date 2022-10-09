@@ -1,4 +1,4 @@
-import { customElement, property } from 'lit/decorators.js'
+import { customElement } from 'lit/decorators.js'
 import type { PropertyValues } from 'lit'
 import { html, LitElement } from 'lit'
 import type { Ref } from 'lit/directives/ref'
@@ -8,9 +8,6 @@ import { APP_MAP_SIZE } from '../../common/consts'
 @customElement('canvas-element')
 export class CanvasElement extends LitElement {
   public canvasRef: Ref<HTMLCanvasElement> = createRef()
-
-  @property()
-  currentWindow: Window | undefined
 
   protected firstUpdated(_changedProperties: PropertyValues) {
     super.firstUpdated(_changedProperties)

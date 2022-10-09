@@ -6,10 +6,42 @@ import { TPosition, TTileData } from './types/common'
 import { EKey } from './enums/key'
 import { ICharacter } from './interfaces/character'
 import { IGame } from './interfaces/game'
+import { TInventory } from './types/inventory'
+import { TActionBar } from './types/actionBar'
 
 export class Character extends Component implements ICharacter {
   public direction: EDirection
   public tileData: TTileData
+  public actionBar: TActionBar = {
+    size: 5,
+    items: [
+      {
+        id: 0,
+        name: 'item1',
+        count: 1,
+      },
+      {
+        id: 1,
+        name: 'item2',
+        count: 1,
+      },
+      {
+        id: 2,
+        name: 'item3',
+        count: 1,
+      },
+    ],
+    selected: 0,
+  }
+  public inventory: TInventory = {
+    bags: [
+      {
+        id: 1,
+        size: 10,
+        items: [],
+      },
+    ],
+  }
 
   constructor(loader: Loader, map: Map, x: number, y: number, tileData: TTileData) {
     super(map, x, y)
