@@ -26,7 +26,7 @@ export class GameElement extends LitElement {
   }
 
   updateCanvasContext(e: CustomEvent): void {
-    this.gameController.setContext(e.detail)
+    this.gameController.setCanvasContext(e.detail)
     this.gameController.init()
 
     this.gameController?.gameInstance?.run().then(() => {

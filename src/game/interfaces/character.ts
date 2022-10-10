@@ -14,7 +14,6 @@ export interface ICharacter {
   screenX: number
   screenY: number
   direction: EDirection
-  actionBar: TActionBar
   inventory: TInventory
 
   move(delta: number, x: number, y: number): void
@@ -24,4 +23,10 @@ export interface ICharacter {
   predictNextPosition(position?: TPosition): TPosition
 
   predictNextPositionTile(position?: TPosition): TPosition
+
+  set actionBar(value: TActionBar)
+
+  get actionBar(): TActionBar
+
+  updateActionBar(currentActionBar: Partial<TActionBar>): void
 }

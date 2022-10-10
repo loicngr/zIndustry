@@ -8,27 +8,31 @@ import { ICharacter } from './interfaces/character'
 import { IGame } from './interfaces/game'
 import { TInventory } from './types/inventory'
 import { TActionBar } from './types/actionBar'
+import { Ui } from './Ui'
 
 export class Character extends Component implements ICharacter {
   public direction: EDirection
   public tileData: TTileData
-  public actionBar: TActionBar = {
+  private _actionBar: TActionBar = {
     size: 5,
     items: [
       {
-        id: 0,
+        id: 1,
         name: 'item1',
         count: 1,
-      },
-      {
-        id: 1,
-        name: 'item2',
-        count: 1,
+        key: EKey.Digit1,
       },
       {
         id: 2,
+        name: 'item2',
+        count: 1,
+        key: EKey.Digit2,
+      },
+      {
+        id: 3,
         name: 'item3',
         count: 1,
+        key: EKey.Digit3,
       },
     ],
     selected: 0,
@@ -42,13 +46,15 @@ export class Character extends Component implements ICharacter {
       },
     ],
   }
+  private readonly _ui: Ui
 
-  constructor(loader: Loader, map: Map, x: number, y: number, tileData: TTileData) {
+  constructor(ui: Ui, loader: Loader, map: Map, x: number, y: number, tileData: TTileData) {
     super(map, x, y)
 
     this.image = loader.getImage(tileData.key)
     this.direction = EDirection.None
     this.tileData = tileData
+    this._ui = ui
   }
 
   public move(delta: number, x: number, y: number): void {
@@ -65,6 +71,24 @@ export class Character extends Component implements ICharacter {
       this.x = Math.max(0, Math.min(this.x, maxX))
       this.y = Math.max(0, Math.min(this.y, maxY))
     }
+  }
+
+  public updateActionBar(value: Partial<TActionBar>): void {
+    const currentActionBar = this._actionBar
+
+    this.actionBar = {
+      ...currentActionBar,
+      ...value,
+    }
+  }
+
+  public set actionBar(value: TActionBar) {
+    this._actionBar = value
+    this._ui.update()
+  }
+
+  public get actionBar(): TActionBar {
+    return this._actionBar
   }
 
   public predictNextPosition(position?: TPosition): TPosition {

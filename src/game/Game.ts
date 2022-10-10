@@ -13,6 +13,8 @@ import { ICharacter } from './interfaces/character'
 import { APP_DEBUG, APP_MAP_SIZE } from '../common/consts'
 import { TMapConfig } from './types/mapConfig'
 import { TTileConfig } from './types/tileConfig'
+import type { ReactiveControllerHost } from 'lit'
+import { Ui } from './Ui'
 
 export class Game implements IGame {
   readonly context: CanvasRenderingContext2D
@@ -25,8 +27,9 @@ export class Game implements IGame {
   shouldDrawGrid: boolean
   tileAnimation: TTileAnimation
   map: undefined | Map
+  ui: Ui
 
-  constructor(context: CanvasRenderingContext2D) {
+  constructor(context: CanvasRenderingContext2D, uiHost: ReactiveControllerHost) {
     this.context = context
     this.previousElapsed = 0
     this.tileAtlas = null
@@ -35,6 +38,7 @@ export class Game implements IGame {
     this.keyboard = new Keyboard()
     this.shouldDrawGrid = APP_DEBUG
     this.tileAnimation = APP_TILE_ANIMATION
+    this.ui = new Ui(uiHost)
   }
 
   run(): Promise<boolean> {
@@ -82,7 +86,7 @@ export class Game implements IGame {
       this.keyboard.listenForEvents(keysValues)
 
       this.tileAtlas = this.loader.getImage('tiles')
-      this.character = new Character(this.loader, this.map, 160, 160, APP_TILE_CHARACTER_1_DATA)
+      this.character = new Character(this.ui, this.loader, this.map, 160, 160, APP_TILE_CHARACTER_1_DATA)
 
       const _APP_MAP_SIZE = APP_MAP_SIZE()
 
@@ -104,6 +108,42 @@ export class Game implements IGame {
       this.keyboard.resetKey(EKey.F1)
 
       this.shouldDrawGrid = !this.shouldDrawGrid
+    }
+
+    if (this.keyboard.isPressed(EKey.Digit1)) {
+      this.keyboard.resetKey(EKey.Digit1)
+
+      if (this.character.actionBar.size >= 1) {
+        if (this.character.actionBar.selected === 1) {
+          this.character.updateActionBar({ selected: 0 })
+        } else {
+          this.character.updateActionBar({ selected: 1 })
+        }
+      }
+    }
+
+    if (this.keyboard.isPressed(EKey.Digit2)) {
+      this.keyboard.resetKey(EKey.Digit2)
+
+      if (this.character.actionBar.size >= 2) {
+        if (this.character.actionBar.selected === 2) {
+          this.character.updateActionBar({ selected: 0 })
+        } else {
+          this.character.updateActionBar({ selected: 2 })
+        }
+      }
+    }
+
+    if (this.keyboard.isPressed(EKey.Digit3)) {
+      this.keyboard.resetKey(EKey.Digit3)
+
+      if (this.character.actionBar.size >= 3) {
+        if (this.character.actionBar.selected === 3) {
+          this.character.updateActionBar({ selected: 0 })
+        } else {
+          this.character.updateActionBar({ selected: 3 })
+        }
+      }
     }
 
     if (this.keyboard.isPressed(EKey.F)) {

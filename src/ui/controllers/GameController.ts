@@ -1,18 +1,20 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import { Game } from '../../game/Game'
 import { TInventory } from '../../game/types/inventory'
+import { TActionBar } from '../../game/types/actionBar'
 
 export class GameController implements ReactiveController {
   host: ReactiveControllerHost
-
   gameInstance: Game | undefined
   context: CanvasRenderingContext2D | undefined
 
   constructor(host: ReactiveControllerHost) {
-    ;(this.host = host).addController(this)
+    this.host = host
+
+    host.addController(this)
   }
 
-  public setContext(context: CanvasRenderingContext2D) {
+  public setCanvasContext(context: CanvasRenderingContext2D) {
     this.context = context
   }
 
@@ -21,15 +23,15 @@ export class GameController implements ReactiveController {
       throw new Error('Canvas context not defined')
     }
 
-    this.gameInstance = new Game(this.context)
+    this.gameInstance = new Game(this.context, this.host)
   }
 
   public get characterInventory(): TInventory | undefined {
     return this.gameInstance?.character?.inventory
   }
 
-  public get characterActionBar(): object | undefined {
-    return this.gameInstance?.character?.actionBar as object
+  public get characterActionBar(): TActionBar | undefined {
+    return this.gameInstance?.character?.actionBar
   }
 
   hostDisconnected() {

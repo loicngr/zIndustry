@@ -4,6 +4,12 @@ import { css, html, LitElement } from 'lit'
 @customElement('keyboard-element')
 export class KeyboardElement extends LitElement {
   static styles = css`
+    @counter-style clear {
+      system: cyclic;
+      symbols: '|';
+      suffix: '-';
+    }
+
     ul {
       position: fixed;
       inset: 0;
@@ -11,6 +17,10 @@ export class KeyboardElement extends LitElement {
       text-shadow: 1px 1px 2px black;
       text-transform: uppercase;
       font-size: 12px;
+    }
+
+    .clear {
+      list-style: clear;
     }
   `
 
@@ -21,9 +31,14 @@ export class KeyboardElement extends LitElement {
         <li>S: Move Down</li>
         <li>D: Move Right</li>
         <li>Q: Move Left</li>
+        <li class="clear"></li>
         <li>E: Place conveyor</li>
         <li>F: Debug in console</li>
         <li>F1: Toggle grid</li>
+        <li class="clear"></li>
+        <li>1: ActionBar 1</li>
+        <li>2: ActionBar 2</li>
+        <li>3: ActionBar 3</li>
       </ul>
     `
   }

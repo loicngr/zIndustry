@@ -6,24 +6,23 @@ import { map } from 'lit/directives/map.js'
 @customElement('action-bar-element')
 export class ActionBar extends LitElement {
   static styles = css`
+    * {
+      box-sizing: border-box;
+    }
+
     #actionBar {
       width: 100vw;
       height: 50px;
 
       position: fixed;
       bottom: 5px;
-    }
-
-    .hud {
-      width: auto;
-      height: 50px;
 
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    .hud .item {
+    #actionBar .item {
       width: 50px;
       height: 50px;
 
@@ -33,15 +32,50 @@ export class ActionBar extends LitElement {
       line-height: 50px;
 
       margin: 0 5px;
+
+      position: relative;
+    }
+
+    #actionBar .item.selected {
+      border: 1px solid black;
+    }
+
+    #actionBar .item .itemCount {
+      width: 15px;
+      height: 15px;
+
+      position: absolute;
+      bottom: 1px;
+      right: 1px;
+
+      line-height: initial;
+      font-weight: bold;
+
+      border-radius: 10px;
+      background: silver;
+
+      font-size: 12px;
     }
   `
 
   @property({ type: Object })
   actionBar: TActionBar | undefined
 
+  protected getSelected(): number | undefined {
+    return this.actionBar?.selected
+  }
+
   protected render(): unknown {
+    const actionBar = this.actionBar
+
     return html`<div id="actionBar">
-      <div class="hud">${map(this.actionBar?.items, (i) => html`<div class="item">${i.name}</div>`)}</div>
+      ${map(
+        actionBar?.items,
+        (i) => html`<div class="item ${actionBar?.selected === i.id ? 'selected' : ''}">
+          <span class="itemCount">${i.count}</span>
+          ${i.name}
+        </div>`,
+      )}
     </div>`
   }
 }
