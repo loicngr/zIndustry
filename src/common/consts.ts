@@ -1,3 +1,5 @@
+import { TBagItemType } from '../game/types/inventory'
+
 /**
  * @ts-ignore */
 export const APP_DEBUG = import.meta.env.DEV
@@ -18,4 +20,12 @@ export const APP_MAP_SIZE = (_window?: Window): { width: number; height: number 
   }
 
   return { width, height }
+}
+
+export const ITEMS_CONVEYOR_KEY = 'conveyor'
+export const ITEMS_TYPES: TBagItemType = {
+  [ITEMS_CONVEYOR_KEY]: {
+    tile: 8,
+    canPlace: true,
+  },
 }

@@ -32,6 +32,7 @@ export class ActionBar extends LitElement {
       line-height: 50px;
 
       margin: 0 5px;
+      font-size: 10px;
 
       position: relative;
     }

@@ -209,10 +209,10 @@ export class Game implements IGame {
     }
 
     const startCol = Math.floor(this.camera.x / this.map.mapConfig.tileSize)
-    const endCol = startCol + this.camera.width / this.map.mapConfig.tileSize
+    const endCol = startCol + this.camera.width / this.map.mapConfig.tileSize + 1
 
     const startRow = Math.floor(this.camera.y / this.map.mapConfig.tileSize)
-    const endRow = startRow + this.camera.height / this.map.mapConfig.tileSize
+    const endRow = startRow + this.camera.height / this.map.mapConfig.tileSize + 1
 
     const offsetX = -this.camera.x + startCol * this.map.mapConfig.tileSize
     const offsetY = -this.camera.y + startRow * this.map.mapConfig.tileSize

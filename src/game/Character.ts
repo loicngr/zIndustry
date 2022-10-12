@@ -9,6 +9,7 @@ import { IGame } from './interfaces/game'
 import { TInventory } from './types/inventory'
 import { TActionBar } from './types/actionBar'
 import { Ui } from './Ui'
+import { ITEMS_CONVEYOR_KEY } from '../common/consts'
 
 export class Character extends Component implements ICharacter {
   public direction: EDirection
@@ -18,9 +19,10 @@ export class Character extends Component implements ICharacter {
     items: [
       {
         id: 1,
-        name: 'item1',
+        name: 'conveyor',
         count: 1,
         key: EKey.Digit1,
+        type: ITEMS_CONVEYOR_KEY,
       },
       {
         id: 2,
