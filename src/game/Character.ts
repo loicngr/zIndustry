@@ -6,10 +6,11 @@ import { TPosition, TTileData } from './types/common'
 import { EKey } from './enums/key'
 import { ICharacter } from './interfaces/character'
 import { IGame } from './interfaces/game'
-import { TInventory } from './types/inventory'
+import {TBagItem, TInventory} from './types/inventory'
 import { TActionBar } from './types/actionBar'
 import { Ui } from './Ui'
 import { ITEMS_CONVEYOR_KEY } from '../common/consts'
+import {devLog} from "./utils";
 
 export class Character extends Component implements ICharacter {
   public direction: EDirection
@@ -20,7 +21,7 @@ export class Character extends Component implements ICharacter {
       {
         id: 1,
         name: 'conveyor',
-        count: 1,
+        count: 10,
         key: EKey.Digit1,
         type: ITEMS_CONVEYOR_KEY,
       },
@@ -37,7 +38,7 @@ export class Character extends Component implements ICharacter {
         key: EKey.Digit3,
       },
     ],
-    selected: 0,
+    selected: undefined,
   }
   public inventory: TInventory = {
     bags: [
@@ -57,6 +58,14 @@ export class Character extends Component implements ICharacter {
     this.direction = EDirection.None
     this.tileData = tileData
     this._ui = ui
+  }
+
+  public get actionBarSelectedItem (): undefined | TBagItem {
+    if (!this.actionBar.selected) {
+      return
+    }
+
+    return this.actionBar.items.find(i => this.actionBar.selected === i.id)
   }
 
   public move(delta: number, x: number, y: number): void {
@@ -82,6 +91,28 @@ export class Character extends Component implements ICharacter {
       ...currentActionBar,
       ...value,
     }
+  }
+
+  public updateActionBarItem(itemId: number, value: Partial<TBagItem>): void {
+    const actionBarItems = [...this._actionBar.items]
+    const itemIndex = actionBarItems.findIndex(i => i.id === itemId)
+
+    if (itemIndex === -1) {
+      devLog("Can't update item")
+      return
+    }
+
+    actionBarItems[itemIndex] = {
+      ...actionBarItems[itemIndex],
+      ...value
+    }
+
+    const actionBar = {...this._actionBar}
+
+    this.updateActionBar({
+      ...actionBar,
+      items: actionBarItems
+    })
   }
 
   public set actionBar(value: TActionBar) {

@@ -62,7 +62,7 @@ export class ActionBar extends LitElement {
   @property({ type: Object })
   actionBar: TActionBar | undefined
 
-  protected getSelected(): number | undefined {
+  protected get getSelected(): number | undefined {
     return this.actionBar?.selected
   }
 
@@ -72,7 +72,7 @@ export class ActionBar extends LitElement {
     return html`<div id="actionBar">
       ${map(
         actionBar?.items,
-        (i) => html`<div class="item ${actionBar?.selected === i.id ? 'selected' : ''}">
+        (i) => html`<div class="item ${this.getSelected === i.id ? 'selected' : ''}">
           <span class="itemCount">${i.count}</span>
           ${i.name}
         </div>`,

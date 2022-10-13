@@ -10,7 +10,7 @@ import { EKey } from './enums/key'
 import { TPosition } from './types/common'
 import { IGame } from './interfaces/game'
 import { ICharacter } from './interfaces/character'
-import { APP_DEBUG, APP_MAP_SIZE } from '../common/consts'
+import {APP_DEBUG, APP_MAP_SIZE, ITEMS_TYPES} from '../common/consts'
 import { TMapConfig } from './types/mapConfig'
 import { TTileConfig } from './types/tileConfig'
 import type { ReactiveControllerHost } from 'lit'
@@ -115,7 +115,7 @@ export class Game implements IGame {
 
       if (this.character.actionBar.size >= 1) {
         if (this.character.actionBar.selected === 1) {
-          this.character.updateActionBar({ selected: 0 })
+          this.character.updateActionBar({ selected: undefined })
         } else {
           this.character.updateActionBar({ selected: 1 })
         }
@@ -127,7 +127,7 @@ export class Game implements IGame {
 
       if (this.character.actionBar.size >= 2) {
         if (this.character.actionBar.selected === 2) {
-          this.character.updateActionBar({ selected: 0 })
+          this.character.updateActionBar({ selected: undefined })
         } else {
           this.character.updateActionBar({ selected: 2 })
         }
@@ -139,7 +139,7 @@ export class Game implements IGame {
 
       if (this.character.actionBar.size >= 3) {
         if (this.character.actionBar.selected === 3) {
-          this.character.updateActionBar({ selected: 0 })
+          this.character.updateActionBar({ selected: undefined })
         } else {
           this.character.updateActionBar({ selected: 3 })
         }
@@ -156,7 +156,15 @@ export class Game implements IGame {
     if (this.keyboard.isPressed(EKey.E) && this.character) {
       this.keyboard.resetKey(EKey.E)
 
-      this.spawnItem(1, this.character.predictNextPositionTile(), 8)
+      const selectedItem = this.character.actionBarSelectedItem
+      if (selectedItem && selectedItem.count > 0 && selectedItem.type) {
+        const itemType = ITEMS_TYPES[selectedItem.type]
+
+        if (itemType.canPlace) {
+          this.character.updateActionBarItem(selectedItem.id, { count: selectedItem.count - 1 })
+          this.spawnItem(1, this.character.predictNextPositionTile(), itemType.tile)
+        }
+      }
     }
 
     this.camera.update()
@@ -276,6 +284,10 @@ export class Game implements IGame {
     const mapRows = this.map.mapConfig.height
     const mapCols = this.map.mapConfig.width
 
+    const baseStrokeStyle = this.context.strokeStyle
+
+    this.context.strokeStyle = '#424242'
+
     const _common = (x: number, y: number, lineToX: number, lineToY: number) => {
       this.context.beginPath()
       this.context.moveTo(x, y)
@@ -296,5 +308,7 @@ export class Game implements IGame {
 
       _common(x, y, x, height)
     }
+
+    this.context.strokeStyle = baseStrokeStyle
   }
 }
