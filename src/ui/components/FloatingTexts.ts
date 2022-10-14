@@ -1,7 +1,7 @@
 import { customElement, property } from 'lit/decorators.js'
 import { css, html, LitElement } from 'lit'
 import type { TemplateResult } from 'lit'
-import { map } from 'lit/directives/map.js'
+import { repeat } from 'lit/directives/repeat.js'
 import { TFloatingText } from '../../common/types'
 
 @customElement('floating-texts-element')
@@ -33,7 +33,7 @@ export class FloatingTexts extends LitElement {
     }
 
     return html`<div id="floatingScreen">
-      ${map(
+      ${repeat(
         this.floatingTexts,
         (item) => html` <span style="left: ${item.at.x}px; top: ${item.at.y}px">${item.text}</span> `,
       )}

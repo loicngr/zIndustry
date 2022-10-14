@@ -1,7 +1,7 @@
 import { customElement, property } from 'lit/decorators.js'
 import { css, html, LitElement } from 'lit'
 import { TActionBar } from '../../game/types/actionBar'
-import { map } from 'lit/directives/map.js'
+import { repeat } from 'lit/directives/repeat.js'
 import { range } from 'lit/directives/range.js'
 import { EFormatKey } from '../../game/enums/key'
 
@@ -95,7 +95,7 @@ export class ActionBar extends LitElement {
     }
 
     return html`<div id="actionBar">
-      ${map(
+      ${repeat(
         range(actionBar.size),
         (i) =>
           html`${actionBar?.items[i]
