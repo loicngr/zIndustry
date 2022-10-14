@@ -2,6 +2,7 @@ import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import { Game } from '../../game/Game'
 import { TInventory } from '../../game/types/inventory'
 import { TActionBar } from '../../game/types/actionBar'
+import { TPosition } from '../../game/types/common'
 
 export class GameController implements ReactiveController {
   host: ReactiveControllerHost
@@ -32,6 +33,10 @@ export class GameController implements ReactiveController {
 
   public get characterActionBar(): TActionBar | undefined {
     return this.gameInstance?.character?.actionBar
+  }
+
+  public get floatingTexts(): { text: string; at: TPosition }[] | undefined {
+    return this.gameInstance?.floatingTexts
   }
 
   hostDisconnected() {

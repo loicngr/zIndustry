@@ -1,5 +1,4 @@
 import type { ReactiveControllerHost } from 'lit'
-
 export class Ui {
   ui: ReactiveControllerHost
 

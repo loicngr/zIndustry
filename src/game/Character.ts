@@ -6,11 +6,11 @@ import { TPosition, TTileData } from './types/common'
 import { EKey } from './enums/key'
 import { ICharacter } from './interfaces/character'
 import { IGame } from './interfaces/game'
-import {TBagItem, TInventory} from './types/inventory'
+import { TBagItem, TInventory } from './types/inventory'
 import { TActionBar } from './types/actionBar'
 import { Ui } from './Ui'
 import { ITEMS_CONVEYOR_KEY } from '../common/consts'
-import {devLog} from "./utils";
+import { devLog } from './utils'
 
 export class Character extends Component implements ICharacter {
   public direction: EDirection
@@ -24,18 +24,6 @@ export class Character extends Component implements ICharacter {
         count: 10,
         key: EKey.Digit1,
         type: ITEMS_CONVEYOR_KEY,
-      },
-      {
-        id: 2,
-        name: 'item2',
-        count: 1,
-        key: EKey.Digit2,
-      },
-      {
-        id: 3,
-        name: 'item3',
-        count: 1,
-        key: EKey.Digit3,
       },
     ],
     selected: undefined,
@@ -60,12 +48,12 @@ export class Character extends Component implements ICharacter {
     this._ui = ui
   }
 
-  public get actionBarSelectedItem (): undefined | TBagItem {
+  public get actionBarSelectedItem(): undefined | TBagItem {
     if (!this.actionBar.selected) {
       return
     }
 
-    return this.actionBar.items.find(i => this.actionBar.selected === i.id)
+    return this.actionBar.items.find((i) => this.actionBar.selected === i.id)
   }
 
   public move(delta: number, x: number, y: number): void {
@@ -95,7 +83,7 @@ export class Character extends Component implements ICharacter {
 
   public updateActionBarItem(itemId: number, value: Partial<TBagItem>): void {
     const actionBarItems = [...this._actionBar.items]
-    const itemIndex = actionBarItems.findIndex(i => i.id === itemId)
+    const itemIndex = actionBarItems.findIndex((i) => i.id === itemId)
 
     if (itemIndex === -1) {
       devLog("Can't update item")
@@ -104,14 +92,14 @@ export class Character extends Component implements ICharacter {
 
     actionBarItems[itemIndex] = {
       ...actionBarItems[itemIndex],
-      ...value
+      ...value,
     }
 
-    const actionBar = {...this._actionBar}
+    const actionBar = { ...this._actionBar }
 
     this.updateActionBar({
       ...actionBar,
-      items: actionBarItems
+      items: actionBarItems,
     })
   }
 
@@ -196,6 +184,19 @@ export class Character extends Component implements ICharacter {
     }
 
     this.move(updateDelta, x, y)
+    this.updateFloatingTexts(game)
+  }
+
+  private updateFloatingTexts(game: IGame): void {
+    const { offsetX, offsetY, startCol, startRow } = game.drawComputeBasics()
+
+    const r = this.map.getHeight(this.y)
+    const c = this.map.getWidth(this.x)
+
+    const x = (c - startCol) * this.map.mapConfig.tileSize + offsetX
+    const y = (r - startRow) * this.map.mapConfig.tileSize + offsetY
+
+    game.floatingTexts.forEach((i) => game.updateFloatingText(i.id, { at: { x, y } }))
   }
 
   private collide(position: TPosition): boolean {

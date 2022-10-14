@@ -35,10 +35,6 @@ export class KeyboardElement extends LitElement {
         <li>E: Place selected item</li>
         <li>F: Debug in console</li>
         <li>F1: Toggle grid</li>
-        <li class="clear"></li>
-        <li>1: ActionBar 1</li>
-        <li>2: ActionBar 2</li>
-        <li>3: ActionBar 3</li>
       </ul>
     `
   }

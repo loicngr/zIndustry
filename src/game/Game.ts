@@ -10,11 +10,12 @@ import { EKey } from './enums/key'
 import { TPosition } from './types/common'
 import { IGame } from './interfaces/game'
 import { ICharacter } from './interfaces/character'
-import {APP_DEBUG, APP_MAP_SIZE, ITEMS_TYPES} from '../common/consts'
+import { APP_MAP_SIZE, ITEMS_TYPES } from '../common/consts'
 import { TMapConfig } from './types/mapConfig'
 import { TTileConfig } from './types/tileConfig'
 import type { ReactiveControllerHost } from 'lit'
 import { Ui } from './Ui'
+import { TFloatingText } from '../common/types'
 
 export class Game implements IGame {
   readonly context: CanvasRenderingContext2D
@@ -27,16 +28,18 @@ export class Game implements IGame {
   shouldDrawGrid: boolean
   tileAnimation: TTileAnimation
   map: undefined | Map
+  readonly floatingTexts: TFloatingText[]
   ui: Ui
 
   constructor(context: CanvasRenderingContext2D, uiHost: ReactiveControllerHost) {
     this.context = context
     this.previousElapsed = 0
     this.tileAtlas = null
+    this.floatingTexts = []
 
     this.loader = new Loader()
     this.keyboard = new Keyboard()
-    this.shouldDrawGrid = APP_DEBUG
+    this.shouldDrawGrid = false
     this.tileAnimation = APP_TILE_ANIMATION
     this.ui = new Ui(uiHost)
   }
@@ -86,7 +89,7 @@ export class Game implements IGame {
       this.keyboard.listenForEvents(keysValues)
 
       this.tileAtlas = this.loader.getImage('tiles')
-      this.character = new Character(this.ui, this.loader, this.map, 160, 160, APP_TILE_CHARACTER_1_DATA)
+      this.character = new Character(this.ui, this.loader, this.map, 500, 160, APP_TILE_CHARACTER_1_DATA)
 
       const _APP_MAP_SIZE = APP_MAP_SIZE()
 
@@ -94,6 +97,103 @@ export class Game implements IGame {
       this.camera.follow(this.character)
 
       resolve(true)
+    })
+  }
+
+  addFloatingText(item: Omit<TFloatingText, 'id'>): number {
+    const itemId = (this.floatingTexts[this.floatingTexts.length - 1]?.id ?? 0) + 1
+    this.floatingTexts.push({ ...item, id: itemId })
+    this.ui.update()
+
+    return itemId
+  }
+
+  removeFloatingText(id: number): void {
+    const index = this.floatingTexts.findIndex((i) => i.id === id)
+
+    if (index !== -1) {
+      this.floatingTexts.splice(index, 1)
+      this.ui.update()
+    }
+  }
+
+  updateFloatingText(id: number, item: Partial<TFloatingText>): void {
+    const index = this.floatingTexts.findIndex((i) => i.id === id)
+
+    if (index !== -1) {
+      this.floatingTexts[index] = {
+        ...this.floatingTexts[index],
+        ...item,
+      }
+      this.ui.update()
+    }
+  }
+
+  handleUpdateKeyActionBarUnSelected(): void {
+    if (!this.map || !this.character) {
+      return
+    }
+
+    const selectedItem = this.character.actionBarSelectedItem
+    if (selectedItem && selectedItem.floatingText !== undefined) {
+      this.removeFloatingText(selectedItem.floatingText)
+      delete selectedItem.floatingText
+    }
+
+    this.map.tileOverlay = {}
+  }
+
+  handleUpdateKeyActionBarSelected(): void {
+    if (!this.map || !this.character) {
+      return
+    }
+
+    const selectedItem = this.character.actionBarSelectedItem
+    if (selectedItem && selectedItem.count > 0 && selectedItem.type) {
+      const itemType = ITEMS_TYPES[selectedItem.type]
+
+      if (itemType.canPlace) {
+        const { x: characterX, y: characterY } = this.character.predictNextPositionTile()
+        const width = this.map.getWidth(characterX)
+        const height = this.map.getHeight(characterY)
+
+        if (!this.map.isSolidTileAtRowCol(width, height)) {
+          this.map.tileOverlay[itemType.tile] = { x: characterX, y: characterY }
+
+          if (selectedItem.floatingText === undefined) {
+            selectedItem.floatingText = this.addFloatingText({
+              text: selectedItem.name,
+              at: { x: characterX, y: characterY },
+            })
+          }
+        }
+      }
+    }
+  }
+
+  handleActionBarKeys(): void {
+    const actionBarKeys: EKey[] = [EKey.Digit1, EKey.Digit2, EKey.Digit3, EKey.Digit4, EKey.Digit5, EKey.Digit6]
+
+    actionBarKeys.forEach((key, _i) => {
+      if (!this.character) {
+        throw new Error('error')
+      }
+
+      const i = _i + 1
+
+      if (this.keyboard.isPressed(key)) {
+        this.keyboard.resetKey(key)
+
+        if (this.character.actionBar.size >= i) {
+          if (this.character.actionBar.selected === i) {
+            this.handleUpdateKeyActionBarUnSelected()
+            this.character.updateActionBar({ selected: undefined })
+          } else {
+            this.character.updateActionBar({ selected: i })
+            this.handleUpdateKeyActionBarSelected()
+          }
+        }
+      }
     })
   }
 
@@ -110,40 +210,10 @@ export class Game implements IGame {
       this.shouldDrawGrid = !this.shouldDrawGrid
     }
 
-    if (this.keyboard.isPressed(EKey.Digit1)) {
-      this.keyboard.resetKey(EKey.Digit1)
+    this.handleActionBarKeys()
 
-      if (this.character.actionBar.size >= 1) {
-        if (this.character.actionBar.selected === 1) {
-          this.character.updateActionBar({ selected: undefined })
-        } else {
-          this.character.updateActionBar({ selected: 1 })
-        }
-      }
-    }
-
-    if (this.keyboard.isPressed(EKey.Digit2)) {
-      this.keyboard.resetKey(EKey.Digit2)
-
-      if (this.character.actionBar.size >= 2) {
-        if (this.character.actionBar.selected === 2) {
-          this.character.updateActionBar({ selected: undefined })
-        } else {
-          this.character.updateActionBar({ selected: 2 })
-        }
-      }
-    }
-
-    if (this.keyboard.isPressed(EKey.Digit3)) {
-      this.keyboard.resetKey(EKey.Digit3)
-
-      if (this.character.actionBar.size >= 3) {
-        if (this.character.actionBar.selected === 3) {
-          this.character.updateActionBar({ selected: undefined })
-        } else {
-          this.character.updateActionBar({ selected: 3 })
-        }
-      }
+    if (this.keyboard.isPressed(EKey.R)) {
+      this.keyboard.resetKey(EKey.R)
     }
 
     if (this.keyboard.isPressed(EKey.F)) {
@@ -161,8 +231,9 @@ export class Game implements IGame {
         const itemType = ITEMS_TYPES[selectedItem.type]
 
         if (itemType.canPlace) {
-          this.character.updateActionBarItem(selectedItem.id, { count: selectedItem.count - 1 })
-          this.spawnItem(1, this.character.predictNextPositionTile(), itemType.tile)
+          if (this.spawnItem(1, this.character.predictNextPositionTile(), itemType.tile)) {
+            this.character.updateActionBarItem(selectedItem.id, { count: selectedItem.count - 1 })
+          }
         }
       }
     }
@@ -170,19 +241,21 @@ export class Game implements IGame {
     this.camera.update()
   }
 
-  spawnItem(layerIndex: number, position: TPosition, tile: number): void {
+  spawnItem(layerIndex: number, position: TPosition, tile: number): boolean {
     if (!this.map) {
-      throw new Error('error')
+      return false
     }
 
     const width = this.map.getWidth(position.x)
     const height = this.map.getHeight(position.y)
 
     if (this.map.isSolidTileAtRowCol(width, height)) {
-      throw new Error('error')
+      return false
     }
 
     this.map.setTile(layerIndex, width, height, tile)
+
+    return true
   }
 
   render(): void {
@@ -208,6 +281,8 @@ export class Game implements IGame {
     // top
     this.drawLayer(2)
 
+    this.drawTileOverlay()
+
     if (this.shouldDrawGrid) this.drawGrid()
   }
 
@@ -216,14 +291,7 @@ export class Game implements IGame {
       throw new Error('error')
     }
 
-    const startCol = Math.floor(this.camera.x / this.map.mapConfig.tileSize)
-    const endCol = startCol + this.camera.width / this.map.mapConfig.tileSize + 1
-
-    const startRow = Math.floor(this.camera.y / this.map.mapConfig.tileSize)
-    const endRow = startRow + this.camera.height / this.map.mapConfig.tileSize + 1
-
-    const offsetX = -this.camera.x + startCol * this.map.mapConfig.tileSize
-    const offsetY = -this.camera.y + startRow * this.map.mapConfig.tileSize
+    const { startCol, endCol, startRow, endRow, offsetX, offsetY } = this.drawComputeBasics()
 
     for (let c = startCol; c <= endCol; ++c) {
       for (let r = startRow; r <= endRow; ++r) {
@@ -252,21 +320,72 @@ export class Game implements IGame {
           tile = this.tileAnimation[tile].tiles[this.tileAnimation[tile].state]
         }
 
-        const sx = ((tile - 1) % this.map.tileConfig.columns) * this.map.mapConfig.tileSize
-        const sy = numberInNumber(tile, this.map.tileConfig.columns) * this.map.mapConfig.tileSize
-
-        this.context.drawImage(
-          this.tileAtlas,
-          sx,
-          sy,
-          this.map.mapConfig.tileSize,
-          this.map.mapConfig.tileSize,
-          Math.round(x),
-          Math.round(y),
-          this.map.mapConfig.tileSize,
-          this.map.mapConfig.tileSize,
-        )
+        const { sx, sy } = this.drawComputeSxSy(tile)
+        this.drawContextDraw(this.tileAtlas, sx, sy, x, y, this.map.mapConfig.tileSize)
       }
+    }
+  }
+
+  drawContextDraw(tile: HTMLImageElement, sx: number, sy: number, x: number, y: number, tileSize: number): void {
+    this.context.drawImage(tile, sx, sy, tileSize, tileSize, Math.round(x), Math.round(y), tileSize, tileSize)
+  }
+
+  drawComputeSxSy(tile: number): { sx: number; sy: number } {
+    if (!this.tileAtlas || !this.camera || !this.map || !this.character) {
+      throw new Error('error')
+    }
+
+    const sx = ((tile - 1) % this.map.tileConfig.columns) * this.map.mapConfig.tileSize
+    const sy = numberInNumber(tile, this.map.tileConfig.columns) * this.map.mapConfig.tileSize
+
+    return { sx, sy }
+  }
+
+  drawComputeBasics(): {
+    startCol: number
+    endCol: number
+    startRow: number
+    endRow: number
+    offsetX: number
+    offsetY: number
+  } {
+    if (!this.camera || !this.map) {
+      throw new Error('error')
+    }
+
+    const startCol = Math.floor(this.camera.x / this.map.mapConfig.tileSize)
+    const endCol = startCol + this.camera.width / this.map.mapConfig.tileSize + 1
+
+    const startRow = Math.floor(this.camera.y / this.map.mapConfig.tileSize)
+    const endRow = startRow + this.camera.height / this.map.mapConfig.tileSize + 1
+
+    const offsetX = -this.camera.x + startCol * this.map.mapConfig.tileSize
+    const offsetY = -this.camera.y + startRow * this.map.mapConfig.tileSize
+
+    return { startCol, endCol, startRow, endRow, offsetX, offsetY }
+  }
+
+  drawTileOverlay(): void {
+    if (!this.tileAtlas || !this.camera || !this.map || !this.character) {
+      throw new Error('error')
+    }
+
+    const { startCol, startRow, offsetX, offsetY } = this.drawComputeBasics()
+
+    for (const strTile in this.map.tileOverlay) {
+      const tile = Number(strTile)
+      const position = this.map.tileOverlay[tile]
+      const r = this.map.getHeight(position.y)
+      const c = this.map.getWidth(position.x)
+
+      const x = (c - startCol) * this.map.mapConfig.tileSize + offsetX
+      const y = (r - startRow) * this.map.mapConfig.tileSize + offsetY
+
+      const { sx, sy } = this.drawComputeSxSy(tile)
+      this.drawContextDraw(this.tileAtlas, sx, sy, x, y, this.map.mapConfig.tileSize)
+
+      const { x: characterX, y: characterY } = this.character.predictNextPositionTile()
+      this.map.tileOverlay[tile] = { x: characterX, y: characterY }
     }
   }
 

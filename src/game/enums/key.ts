@@ -5,6 +5,7 @@ export enum EKey {
   Up = 'KeyW',
   Down = 'KeyS',
   E = 'KeyE',
+  R = 'KeyR',
   F = 'KeyF',
   F1 = 'F1',
   Digit1 = 'Digit1',
@@ -16,4 +17,24 @@ export enum EKey {
   Digit7 = 'Digit7',
   Digit8 = 'Digit8',
   Digit9 = 'Digit9',
+}
+
+export enum EFormatKey {
+  KeyD = 'D',
+  KeyA = 'A',
+  KeyW = 'W',
+  KeyS = 'S',
+  KeyE = 'E',
+  KeyR = 'R',
+  KeyF = 'F',
+  F1 = 'F1',
+  Digit1 = '1',
+  Digit2 = '2',
+  Digit3 = '3',
+  Digit4 = '4',
+  Digit5 = '5',
+  Digit6 = '6',
+  Digit7 = '7',
+  Digit8 = '8',
+  Digit9 = '9',
 }

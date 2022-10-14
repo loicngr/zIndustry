@@ -12,6 +12,7 @@ export type TBagItem = {
   name: string
   icon?: string
   count: number
+  floatingText?: number
   key: EKey
   type?: string
 }
@@ -19,7 +20,7 @@ export type TBagItem = {
 type TBag = {
   id: number
   size: number
-  items: Pick<TBagItem, 'key' | 'type'>[]
+  items: Pick<TBagItem, 'key' | 'type' | 'floatingText'>[]
 }
 
 export type TInventory = {

@@ -7,10 +7,12 @@ import safeGet from 'lodash/get'
 export class Map {
   public mapConfig: TMapConfig
   public tileConfig: TTileConfig
+  public tileOverlay: { [key: number]: TPosition }
 
   constructor(mapConfig: TMapConfig, tileConfig: TTileConfig) {
     this.tileConfig = tileConfig
     this.mapConfig = mapConfig
+    this.tileOverlay = {}
 
     this.mapConfig.layers = keyBy(this.mapConfig.layers, 'id')
     this.mapConfig.tileSize = this.mapConfig.tileheight
