@@ -188,7 +188,7 @@ export class Character extends Component implements ICharacter {
   }
 
   private updateFloatingTexts(game: IGame): void {
-    const { offsetX, offsetY, startCol, startRow } = game.drawComputeBasics()
+    const { offsetX, offsetY, startCol, startRow } = game.render.computeBasics()
 
     const r = this.map.getHeight(this.y)
     const c = this.map.getWidth(this.x)
@@ -196,7 +196,7 @@ export class Character extends Component implements ICharacter {
     const x = (c - startCol) * this.map.mapConfig.tileSize + offsetX
     const y = (r - startRow) * this.map.mapConfig.tileSize + offsetY
 
-    game.floatingTexts.forEach((i) => game.updateFloatingText(i.id, { at: { x, y } }))
+    game.floatingTexts.elements.forEach((i) => game.floatingTexts.update(i.id, { at: { x, y } }))
   }
 
   private collide(position: TPosition): boolean {

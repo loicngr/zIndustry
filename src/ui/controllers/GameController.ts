@@ -36,7 +36,7 @@ export class GameController implements ReactiveController {
   }
 
   public get floatingTexts(): { text: string; at: TPosition }[] | undefined {
-    return this.gameInstance?.floatingTexts
+    return this.gameInstance?.floatingTexts.elements
   }
 
   hostDisconnected() {
