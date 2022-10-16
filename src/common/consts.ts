@@ -29,3 +29,6 @@ export const ITEMS_TYPES: TBagItemType = {
     canPlace: true,
   },
 }
+
+export const ROUTER_DEFAULT = 'home'
+export const ROUTER_GAME = 'game'

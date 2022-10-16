@@ -1,6 +1,6 @@
 import './style.css'
-import { GameElement } from './ui'
+import { AppElement } from './ui'
 
 window.onload = () => {
-  new GameElement()
+  new AppElement()
 }

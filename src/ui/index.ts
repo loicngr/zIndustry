@@ -1,67 +1,51 @@
 import { customElement } from 'lit/decorators.js'
 import { css, html, LitElement } from 'lit'
-import type { TemplateResult } from 'lit'
+import type { PropertyValues } from 'lit'
+import { bind as routerBind } from '../router'
+import { createRef, ref } from 'lit/directives/ref.js'
+import type { Ref } from 'lit/directives/ref.js'
 
-// CustomElements
-import './components/KeyboardElement'
-import './components/CanvasElement'
-import './components/ActionBar'
-import './components/FloatingTexts'
-
-// Controllers
-import { GameController } from './controllers/GameController'
-
-@customElement('game-element')
-export class GameElement extends LitElement {
+@customElement('app-element')
+export class AppElement extends LitElement {
   static styles = css`
-    * {
-      box-sizing: border-box;
+    :host {
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+    }
+
+    main {
+      height: 100vh;
+      width: 100vw;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    footer {
     }
   `
 
-  private gameController: GameController
-  private gameReady = false
+  private readonly mainRef: Ref<HTMLCanvasElement> = createRef()
 
-  constructor() {
-    super()
+  protected firstUpdated(_changedProperties: PropertyValues) {
+    super.firstUpdated(_changedProperties)
 
-    this.gameController = new GameController(this)
-  }
+    const mainRef: HTMLCanvasElement | undefined = this.mainRef.value
 
-  connectedCallback() {
-    super.connectedCallback()
-  }
+    if (!mainRef) {
+      throw new Error('Main element not found')
+    }
 
-  updateCanvasContext(e: CustomEvent): void {
-    this.gameController.setCanvasContext(e.detail)
-    this.gameController.init()
-
-    this.gameController?.gameInstance?.run().then(() => {
-      this.gameReady = true
-      this.requestUpdate()
-    })
-  }
-
-  private get commonTemplate(): TemplateResult {
-    return html`<keyboard-element></keyboard-element>
-      <floating-texts-element
-        floatingTexts="${JSON.stringify(this.gameController.floatingTexts)}"
-      ></floating-texts-element>`
-  }
-
-  private get canvasTemplate(): TemplateResult {
-    return html`<canvas-element @update-canvas-context="${this.updateCanvasContext}"></canvas-element>`
-  }
-
-  private get getGameReadyTemplate(): TemplateResult {
-    return this.gameReady
-      ? html`<action-bar-element
-          actionBar="${JSON.stringify(this.gameController.characterActionBar)}"
-        ></action-bar-element>`
-      : html``
+    routerBind(mainRef)
   }
 
   protected render(): unknown {
-    return html` ${this.commonTemplate} ${this.getGameReadyTemplate} ${this.canvasTemplate} `
+    return html`<header></header>
+      <main ${ref(this.mainRef)} role="main"></main>
+      <footer></footer>`
   }
 }

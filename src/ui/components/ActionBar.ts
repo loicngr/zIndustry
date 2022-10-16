@@ -8,6 +8,10 @@ import { EFormatKey } from '../../game/enums/key'
 @customElement('action-bar-element')
 export class ActionBar extends LitElement {
   static styles = css`
+    :host {
+      pointer-events: none;
+    }
+
     * {
       box-sizing: border-box;
     }
