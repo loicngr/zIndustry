@@ -4,7 +4,10 @@
 
 - [w3Schools](https://www.w3schools.com/graphics/game_intro.asp)
 
-  npm start
+### Commands
+
+- npm run dev
+- npm run build
 
 ### Project structure
 
