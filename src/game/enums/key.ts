@@ -17,6 +17,7 @@ export enum EKey {
   Digit7 = 'Digit7',
   Digit8 = 'Digit8',
   Digit9 = 'Digit9',
+  Escape = 'Escape',
 }
 
 export enum EFormatKey {
@@ -37,4 +38,5 @@ export enum EFormatKey {
   Digit7 = '7',
   Digit8 = '8',
   Digit9 = '9',
+  Escape = 'Escape',
 }

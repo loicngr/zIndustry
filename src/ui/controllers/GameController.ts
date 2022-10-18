@@ -35,6 +35,10 @@ export class GameController implements ReactiveController {
     return this.gameInstance?.character?.actionBar
   }
 
+  public get isGamePaused(): boolean {
+    return this.gameInstance?.pause?.status ?? false
+  }
+
   public get floatingTexts(): { text: string; at: TPosition }[] | undefined {
     return this.gameInstance?.floatingTexts.elements
   }

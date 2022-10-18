@@ -7,11 +7,10 @@ import './KeyboardElement'
 import './CanvasElement'
 import './ActionBar'
 import './FloatingTexts'
+import './PauseElement'
 
 // Controllers
 import { GameController } from '../controllers/GameController'
-import { goTo as routerGoTo } from '../../router'
-import { ROUTER_DEFAULT } from '../../common/consts'
 
 @customElement('game-element')
 export class GameElement extends LitElement {
@@ -45,15 +44,13 @@ export class GameElement extends LitElement {
   }
 
   private get commonTemplate(): TemplateResult {
-    return html`<keyboard-element></keyboard-element>
+    return html`
+      <pause-element isGamePaused="${this.gameController.isGamePaused}"></pause-element>
+      <keyboard-element></keyboard-element>
       <floating-texts-element
         floatingTexts="${JSON.stringify(this.gameController.floatingTexts)}"
       ></floating-texts-element>
-      <div style="position: fixed; bottom: 10px; right: 10px">
-        <a href="${routerGoTo(ROUTER_DEFAULT)}" style="color: white; text-decoration: none; font-weight: bold"
-          >Go home</a
-        >
-      </div> `
+    `
   }
 
   private get canvasTemplate(): TemplateResult {

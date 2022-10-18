@@ -17,6 +17,7 @@ import type { ReactiveControllerHost } from 'lit'
 import { Ui } from './Ui'
 import { FloatingText } from './FloatingText'
 import { Render } from './Render'
+import { Pause } from './Pause'
 
 export class Game implements IGame {
   readonly canvasContext: CanvasRenderingContext2D
@@ -25,6 +26,7 @@ export class Game implements IGame {
   readonly floatingTexts: FloatingText
   readonly keyboard: Keyboard
   readonly ui: Ui
+  readonly pause: Pause
   readonly render: Render
   map: undefined | Map
   camera: undefined | Camera
@@ -44,6 +46,7 @@ export class Game implements IGame {
     this.tileAnimation = APP_TILE_ANIMATION
     this.ui = new Ui(uiHost)
     this.floatingTexts = new FloatingText(this.ui)
+    this.pause = new Pause(this.ui)
     this.render = new Render(this)
   }
 
@@ -193,6 +196,12 @@ export class Game implements IGame {
     }
 
     this.handleActionBarKeys()
+
+    if (this.keyboard.isPressed(EKey.Escape)) {
+      this.keyboard.resetKey(EKey.Escape)
+
+      this.pause.status = !this.pause.status
+    }
 
     if (this.keyboard.isPressed(EKey.R)) {
       this.keyboard.resetKey(EKey.R)

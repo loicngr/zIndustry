@@ -32,6 +32,7 @@ export class KeyboardElement extends LitElement {
         <li>D: Move Right</li>
         <li>Q: Move Left</li>
         <li class="clear"></li>
+        <li>Escape: Pause game</li>
         <li>E: Place selected item</li>
         <li>F: Debug in console</li>
         <li>F1: Toggle grid</li>
