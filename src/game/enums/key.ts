@@ -20,6 +20,26 @@ export enum EKey {
   Escape = 'Escape',
 }
 
+export enum EMouseKey {
+  Click = 'click',
+  MouseUp = 'mouseup',
+  MouseDown = 'mousedown',
+}
+
+export enum EMouseKeyBinding {
+  click = 'onClick',
+  mouseup = 'onMouseUp',
+  mousedown = 'onMouseDown',
+}
+
+export enum EWheelKey {
+  Wheel = 'wheel',
+}
+
+export enum EWheelKeyBinding {
+  wheel = 'onWheel',
+}
+
 export enum EFormatKey {
   KeyD = 'D',
   KeyA = 'A',

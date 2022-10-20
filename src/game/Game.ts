@@ -6,7 +6,7 @@ import { Character } from './Character'
 import { devLog, forceCast } from './utils'
 import { Map } from './Map'
 import { TTileAnimation } from './types/tileAnimation'
-import { EKey } from './enums/key'
+import { EKey, EMouseKey, EWheelKey } from './enums/key'
 import { TPosition } from './types/common'
 import { IGame } from './interfaces/game'
 import { ICharacter } from './interfaces/character'
@@ -88,6 +88,10 @@ export class Game implements IGame {
 
     const keysValues = Object.values(EKey)
     this.keyboard.listenForEvents(keysValues)
+    const mouseKeysValues = Object.values(EMouseKey)
+    this.keyboard.listenForMouseEvents(mouseKeysValues)
+    const wheelKeysValues = Object.values(EWheelKey)
+    this.keyboard.listenForWheelEvents(wheelKeysValues)
 
     this.tileAtlas = this.loader.getImage('tiles')
     this.character = new Character(this.ui, this.loader, this.map, 500, 160, APP_TILE_CHARACTER_1_DATA)

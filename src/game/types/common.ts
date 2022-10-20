@@ -2,6 +2,8 @@ import { EDirection } from '../enums/direction'
 
 export type TKeyboard = Record<string, boolean>
 
+export type TKeyboardEvent = Record<string, MouseEvent | PointerEvent | WheelEvent>
+
 export type TPosition = { x: number; y: number }
 
 export type TLoader = Record<string, HTMLImageElement | unknown>
